@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mensagem de Pai Benedito — Assista Agora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Tokens ── */
+    :root {
+      --black:   #08080c;
+      --dark1:   #10101a;
+      --dark2:   #16162a;
+      --card:    #0d0d18;
+      --gold:    #c9a84c;
+      --gold-lt: #e8c96a;
+      --gold-dk: #8c6e28;
+      --white:   #f0eeea;
+      --muted:   #a09b91;
+      --dim:     #5a5550;
+      --green:   #34c759;
+      --red:     #b02020;
+      --radius:  16px;
+    }
+
+    /* ── Base ── */
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Lato', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Urgency bar ── */
+    .urgency-bar {
+      background: linear-gradient(90deg, #7a1515 0%, var(--red) 50%, #7a1515 100%);
+      text-align: center;
+      padding: 13px 20px;
+      font-size: clamp(11px, 2.2vw, 13px);
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .urgency-bar svg { width: 15px; height: 15px; fill: #fff; flex-shrink: 0; }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      padding: 48px 0 36px;
+    }
+
+    .deco-line {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .deco-line::before, .deco-line::after {
+      content: '';
+      width: 48px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dk));
+    }
+    .deco-line::after { background: linear-gradient(90deg, var(--gold-dk), transparent); }
+    .deco-sym { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold-dk); letter-spacing: 4px; }
+
+    .headline {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(20px, 4.5vw, 34px);
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      text-wrap: balance;
+    }
+    .headline em { font-style: normal; color: var(--gold); }
+
+    .subhead {
+      font-size: clamp(13px, 2.4vw, 16px);
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 300;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ── Video ── */
+    .video-section { margin: 28px 0 12px; }
+
+    .video-frame {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dk) 50%, var(--gold) 100%);
+      border-radius: 18px;
+      padding: 3px;
+    }
+
+    .video-inner {
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      position: relative;
+    }
+
+    /* ─ Replace this placeholder with your embed code ─ */
+    .video-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, #1a1a2e 0%, #08080c 100%);
+      min-height: 280px;
+    }
+    .play-ring {
+      width: 72px; height: 72px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .3s ease;
+      box-shadow: 0 0 0 0 rgba(201,168,76,.5);
+      animation: playPulse 2s ease-in-out infinite;
+    }
+    .play-ring:hover { transform: scale(1.08); }
+    .play-ring svg { width: 28px; height: 28px; fill: #08080c; margin-left: 5px; }
+    @keyframes playPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,.5); }
+      50%      { box-shadow: 0 0 0 16px rgba(201,168,76,0); }
+    }
+    .video-placeholder p { font-size: 13px; color: var(--dim); font-style: italic; }
+    /* ─────────────────────────────────────────────── */
+
+    .video-notice {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--dim);
+    }
+    .video-notice svg { width: 13px; height: 13px; stroke: var(--dim); fill: none; }
+
+    /* ── Section divider ── */
+    .section-sep {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 52px 0 40px;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      color: var(--gold-dk);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .section-sep::before, .section-sep::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dk), transparent);
+    }
+
+    /* ── Offer headline ── */
+    .offer-head { text-align: center; margin-bottom: 32px; }
+    .offer-head h2 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(17px, 3.8vw, 27px);
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+    .offer-head h2 em { font-style: normal; color: var(--gold); }
+    .offer-head p { font-size: 15px; color: var(--muted); line-height: 1.72; }
+
+    /* ── Product card ── */
+    .product-card {
+      background: var(--card);
+      border: 1px solid var(--gold);
+      border-radius: 22px;
+      overflow: hidden;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .prod-head {
+      background: rgba(201,168,76,.07);
+      padding: 28px 28px 22px;
+      text-align: center;
+      border-bottom: 1px solid rgba(201,168,76,.12);
+    }
+    .prod-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+    .prod-name {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(18px, 3.5vw, 26px);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .prod-sub { font-size: 13px; color: var(--muted); }
+
+    /* Includes */
+    .includes { padding: 24px 28px; }
+    .includes-label {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .item:last-child { border-bottom: none; }
+
+    .item-check {
+      width: 26px; height: 26px;
+      background: rgba(52,199,89,.13);
+      border: 1px solid rgba(52,199,89,.25);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .item-check svg { width: 13px; height: 13px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    .item-text strong { display: block; font-size: 14px; color: var(--white); margin-bottom: 3px; line-height: 1.4; }
+    .item-text span { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+
+    /* Price */
+    .price-box {
+      background: rgba(201,168,76,.06);
+      border-top: 1px solid rgba(201,168,76,.14);
+      padding: 28px 28px 20px;
+      text-align: center;
+    }
+    .price-de { font-size: 13px; color: var(--dim); text-decoration: line-through; margin-bottom: 4px; }
+    .price-val {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(44px, 10vw, 62px);
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .price-val sup { font-size: 22px; vertical-align: super; font-weight: 400; }
+    .price-note { font-size: 12px; color: var(--dim); margin-top: 6px; }
+
+    /* Order bump */
+    .bump {
+      margin: 0 20px 20px;
+      background: rgba(52,199,89,.05);
+      border: 1.5px dashed rgba(52,199,89,.35);
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      cursor: pointer;
+      transition: background .2s ease;
+    }
+    .bump:hover { background: rgba(52,199,89,.08); }
+
+    .bump-cb {
+      width: 20px; height: 20px;
+      accent-color: var(--green);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .bump-label strong { display: block; font-size: 13px; color: var(--green); margin-bottom: 3px; }
+    .bump-label span { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    /* CTA */
+    .cta-zone {
+      padding: 4px 20px 28px;
+      text-align: center;
+    }
+
+    .btn-buy {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: linear-gradient(135deg, #c9a84c 0%, #e8c96a 50%, #c9a84c 100%);
+      background-size: 200% auto;
+      color: var(--black);
+      font-family: 'Cinzel', serif;
+      font-size: clamp(14px, 2.8vw, 18px);
+      font-weight: 700;
+      letter-spacing: .8px;
+      padding: 22px 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      animation: buyGlow 3s ease-in-out infinite;
+      transition: transform .2s ease;
+    }
+    .btn-buy svg { width: 20px; height: 20px; fill: var(--black); flex-shrink: 0; }
+    @keyframes buyGlow {
+      0%,100% { box-shadow: 0 8px 30px rgba(201,168,76,.4); background-position: 0% center; }
+      50%      { box-shadow: 0 10px 44px rgba(201,168,76,.7); background-position: 100% center; }
+    }
+    .btn-buy:hover { transform: translateY(-2px); }
+
+    .trust-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 14px;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      color: var(--dim);
+    }
+    .trust-item svg { width: 13px; height: 13px; stroke: var(--dim); fill: none; stroke-width: 2; stroke-linecap: round; }
+
+    /* ── Guarantee ── */
+    .guarantee {
+      background: var(--card);
+      border: 1px solid rgba(52,199,89,.2);
+      border-radius: 18px;
+      padding: 28px 24px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 52px;
+    }
+    .guarantee-icon {
+      width: 64px; height: 64px;
+      background: rgba(52,199,89,.1);
+      border-radius: 50%;
+      border: 1px solid rgba(52,199,89,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .guarantee-icon svg { width: 32px; height: 32px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; }
+    .guarantee h3 { font-family: 'Cinzel', serif; font-size: 16px; color: var(--green); margin-bottom: 8px; }
+    .guarantee p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+    @media (max-width: 520px) {
+      .guarantee { flex-direction: column; text-align: center; }
+    }
+
+    /* ── Testimonials ── */
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(16px, 3.5vw, 22px);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .section-sub { text-align: center; font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+
+    .depos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 52px;
+    }
+    @media (max-width: 520px) { .depos { grid-template-columns: 1fr; } }
+
+    .depo {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: left;
+      position: relative;
+      transition: border-color .25s ease;
+    }
+    .depo:hover { border-color: rgba(201,168,76,.25); }
+
+    .depo-stars { color: var(--gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 10px; }
+
+    .depo-quote {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 14px;
+      font-style: italic;
+      position: relative;
+      padding-left: 14px;
+    }
+    .depo-quote::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--gold-dk);
+      border-radius: 2px;
+    }
+
+    .depo-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .depo-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-dk), var(--gold));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--black);
+      flex-shrink: 0;
+    }
+    .depo-info strong { display: block; font-size: 12px; color: var(--white); }
+    .depo-info span { font-size: 11px; color: var(--dim); }
+
+    /* ── Final CTA ── */
+    .final-cta {
+      text-align: center;
+      padding: 20px 0 44px;
+    }
+    .final-cta h2 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(17px, 3.5vw, 24px);
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+    .final-cta h2 em { font-style: normal; color: var(--gold); }
+    .final-cta p { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+    .final-cta .btn-buy { max-width: 540px; margin: 0 auto; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,.05);
+      font-size: 11px;
+      color: rgba(160,155,145,.4);
+      line-height: 1.75;
+    }
+
+    /* ── Mobile sticky CTA ── */
+    .sticky-cta {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      padding: 12px 16px 16px;
+      background: linear-gradient(to top, var(--black) 60%, transparent);
+      z-index: 50;
+    }
+    @media (max-width: 600px) { .sticky-cta { display: block; } }
+    .sticky-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: linear-gradient(135deg, #c9a84c, #e8c96a);
+      color: var(--black);
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 -4px 24px rgba(201,168,76,.3);
+    }
+    .sticky-btn svg { width: 18px; height: 18px; fill: var(--black); }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      .btn-buy, .play-ring { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Urgency bar -->
+  <div class="urgency-bar" role="alert">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+    Assista agora — esta mensagem pode ser retirada a qualquer momento
+  </div>
+
+  <div class="page">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="deco-line">
+        <span class="deco-sym">✦ &nbsp; ✦ &nbsp; ✦</span>
+      </div>
+      <h1 class="headline">
+        A mensagem de Pai Benedito<br />
+        sobre <em>o seu bloqueio financeiro</em>
+      </h1>
+      <p class="subhead">
+        Assista ao vídeo até o final. O que ele vai revelar sobre a sua situação
+        é mais urgente do que você imagina.
+      </p>
+    </header>
+
+    <!-- Video -->
+    <section class="video-section" aria-label="Vídeo da mensagem">
+      <div class="video-frame">
+        <div class="video-inner">
+          <video
+            id="vsl-player"
+            src="vsl.mp4"
+            controls
+            preload="metadata"
+            playsinline
+            poster=""
+            style="width:100%;height:100%;display:block;background:#000;border-radius:16px;"
+            aria-label="Vídeo: Mensagem de Pai Benedito">
+            Seu navegador não suporta reprodução de vídeo.
+          </video>
+        </div>
+      </div>
+      <p class="video-notice">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Vídeo privado — não compartilhe este link
+      </p>
+    </section>
+
+    <!-- Separator -->
+    <div class="section-sep">A solução que Pai Benedito preparou para você</div>
+
+    <!-- Offer headline -->
+    <div class="offer-head">
+      <h2>Agora que você entendeu o bloqueio,<br /><em>é hora de quebrá-lo de vez.</em></h2>
+      <p>
+        Pai Benedito preparou um ritual completo de 7 dias — com orações em áudio, afirmações
+        e ações financeiras concretas — para desbloqueiar sua prosperidade de dentro para fora.
+      </p>
+    </div>
+
+    <!-- Product card -->
+    <div class="product-card">
+      <div class="prod-head">
+        <span class="prod-badge">Oferta exclusiva</span>
+        <h2 class="prod-name">Ritual dos 7 Dias</h2>
+        <p class="prod-sub">Desbloqueio Financeiro com Pai Benedito</p>
+      </div>
+
+      <div class="includes">
+        <p class="includes-label">O que você recebe</p>
+
+        <div class="item">
+          <div class="item-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="item-text">
+            <strong>Guia em PDF — 7 dias completos</strong>
+            <span>Ritual diário com intenção, preparo, etapas, oração e afirmação. Design premium para imprimir ou ler no celular.</span>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="item-text">
+            <strong>7 Orações em Áudio — voz de Pai Benedito</strong>
+            <span>Uma oração por dia, narrada para você ouvir durante o ritual. Experiência imersiva e poderosa.</span>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="item-text">
+            <strong>7 Ações Financeiras Concretas</strong>
+            <span>Uma ação prática por dia para transformar a energia espiritual em resultado real no mundo material.</span>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="item-text">
+            <strong>Acesso imediato após a confirmação</strong>
+            <span>Todos os materiais entregues direto no seu WhatsApp em até 5 minutos.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="price-box">
+        <p class="price-de">De R$ 97,00</p>
+        <p class="price-val"><sup>R$</sup> 37</p>
+        <p class="price-note">pagamento único · acesso imediato</p>
+      </div>
+
+      <!-- Order bump -->
+      <label class="bump" for="bump-cb">
+        <input type="checkbox" class="bump-cb" id="bump-cb" />
+        <div class="bump-label">
+          <strong>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><polyline points="20 6 9 17 4 12"/></svg>
+            Sim! Adicionar o Banho de Prosperidade por apenas R$ 17
+          </strong>
+          <span>PDF completo com o ritual de banho de atração financeira. Ingredientes, preparo passo a passo, oração e afirmação. Complemento perfeito para os 7 dias.</span>
+        </div>
+      </label>
+
+      <!-- CTA -->
+      <div class="cta-zone">
+        <a href="SEU-LINK-DE-CHECKOUT-AQUI" class="btn-buy" id="btnPrincipal">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          QUERO QUEBRAR MEU BLOQUEIO AGORA
+        </a>
+        <div class="trust-row">
+          <span class="trust-item">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Pagamento seguro
+          </span>
+          <span class="trust-item">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            7 dias de garantia
+          </span>
+          <span class="trust-item">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            Entrega no WhatsApp
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guarantee -->
+    <div class="guarantee">
+      <div class="guarantee-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div>
+        <h3>Garantia incondicional de 7 dias</h3>
+        <p>
+          Se em 7 dias você seguir o ritual e não sentir nenhuma transformação energética,
+          devolvemos cada centavo. Sem burocracia, sem perguntas. Você não perde nada — só tem a ganhar.
+        </p>
+      </div>
+    </div>
+
+    <!-- Testimonials -->
+    <h2 class="section-title">Pessoas que já quebraram o bloqueio</h2>
+    <p class="section-sub">Experiências reais de quem realizou o Ritual dos 7 Dias</p>
+
+    <div class="depos">
+
+      <div class="depo">
+        <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
+        <p class="depo-quote">No 3º dia já senti algo diferente dentro de mim. No 7º dia recebi uma proposta de emprego que não esperava. Fiz com fé e funcionou de verdade.</p>
+        <div class="depo-author">
+          <div class="depo-avatar" aria-hidden="true">M</div>
+          <div class="depo-info">
+            <strong>Maria das Graças S.</strong>
+            <span>São Paulo, SP</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="depo">
+        <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
+        <p class="depo-quote">Era cética mas resolvi tentar. O áudio da oração me emocionou demais. Quitei uma dívida que tinha há 2 anos logo depois de terminar os 7 dias.</p>
+        <div class="depo-author">
+          <div class="depo-avatar" aria-hidden="true">R</div>
+          <div class="depo-info">
+            <strong>Rosangela M.</strong>
+            <span>Belo Horizonte, MG</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="depo">
+        <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
+        <p class="depo-quote">O ritual do Dia 3 foi o que mais me transformou. Chorei muito, soltei coisas antigas. Minha vida financeira começou a mudar a partir dali.</p>
+        <div class="depo-author">
+          <div class="depo-avatar" aria-hidden="true">C</div>
+          <div class="depo-info">
+            <strong>Cleide A.</strong>
+            <span>Recife, PE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="depo">
+        <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
+        <p class="depo-quote">Nunca tinha feito nada assim. Realizei todos os 7 dias e no final consegui vender o carro parado há meses. Axé, Pai Benedito.</p>
+        <div class="depo-author">
+          <div class="depo-avatar" aria-hidden="true">F</div>
+          <div class="depo-info">
+            <strong>Fatima R.</strong>
+            <span>Fortaleza, CE</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Final CTA -->
+    <div class="final-cta">
+      <h2>Pronta(o) para quebrar o bloqueio<br /><em>de uma vez por todas?</em></h2>
+      <p>Acesso imediato · 7 dias de garantia · R$ 37 pagamento único</p>
+      <a href="SEU-LINK-DE-CHECKOUT-AQUI" class="btn-buy" id="btnFinal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        COMEÇAR MEU RITUAL AGORA
+      </a>
+      <div class="trust-row" style="margin-top:14px">
+        <span class="trust-item">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Pagamento seguro
+        </span>
+        <span class="trust-item">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Entrega no WhatsApp em 5 min
+        </span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      Os resultados apresentados são experiências individuais e podem variar.<br />
+      Este site não é afiliado ao Facebook ou Instagram.<br />
+      © 2026 Pai Benedito — Todos os direitos reservados.
+    </footer>
+
+  </div>
+
+  <!-- Mobile sticky CTA -->
+  <div class="sticky-cta" aria-hidden="true">
+    <a href="SEU-LINK-DE-CHECKOUT-AQUI" class="sticky-btn" id="btnSticky" tabindex="-1">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Quero meu ritual — R$ 37
+    </a>
+  </div>
+
+  <script>
+    // Order bump — troca o link do checkout
+    const cb = document.getElementById('bump-cb');
+    const btns = [
+      document.getElementById('btnPrincipal'),
+      document.getElementById('btnFinal'),
+      document.getElementById('btnSticky'),
+    ];
+    const URL_BASE = 'SEU-LINK-DE-CHECKOUT-AQUI';
+    const URL_BUMP = 'SEU-LINK-COM-ORDER-BUMP-AQUI';
+
+    cb.addEventListener('change', () => {
+      btns.forEach(b => { if (b) b.href = cb.checked ? URL_BUMP : URL_BASE; });
+    });
+
+    // Hide sticky CTA when main CTA is visible
+    const observer = new IntersectionObserver(entries => {
+      const sticky = document.querySelector('.sticky-cta');
+      if (!sticky) return;
+      sticky.style.display = entries[0].isIntersecting ? 'none' : 'block';
+    }, { threshold: 0.5 });
+
+    const mainCta = document.querySelector('.cta-zone');
+    if (mainCta) observer.observe(mainCta);
+  </script>
+
+</body>
+</html>

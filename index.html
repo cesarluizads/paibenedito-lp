@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pai Benedito — Mensagem Urgente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Tokens ── */
+    :root {
+      --black:   #08080c;
+      --dark1:   #10101a;
+      --dark2:   #18182a;
+      --gold:    #c9a84c;
+      --gold-lt: #e8c96a;
+      --gold-dk: #8c6e28;
+      --white:   #f0eeea;
+      --muted:   #a09b91;
+      --dim:     #5a5550;
+      --card-bg: #0e0e18;
+      --radius:  14px;
+    }
+
+    /* ── Base ── */
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Lato', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ── Starfield background ── */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .stars::before, .stars::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(201,168,76,.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 50%, rgba(240,238,234,.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 55% 8%, rgba(201,168,76,.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 35%, rgba(240,238,234,.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 70%, rgba(201,168,76,.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 15% 85%, rgba(240,238,234,.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 45% 90%, rgba(201,168,76,.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 92% 20%, rgba(240,238,234,.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 65%, rgba(201,168,76,.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 30%, rgba(240,238,234,.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 78% 55%, rgba(240,238,234,.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 40% 40%, rgba(201,168,76,.4) 0%, transparent 100%);
+      animation: twinkle 6s ease-in-out infinite alternate;
+    }
+    .stars::after {
+      background-image:
+        radial-gradient(1px 1px at 20% 60%, rgba(201,168,76,.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 50% 25%, rgba(240,238,234,.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 80% 10%, rgba(201,168,76,.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 45%, rgba(240,238,234,.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 65% 80%, rgba(201,168,76,.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 72%, rgba(240,238,234,.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 88%, rgba(201,168,76,.4) 0%, transparent 100%);
+      animation-delay: 3s;
+      animation-duration: 8s;
+    }
+    @keyframes twinkle {
+      0%   { opacity: .6; }
+      100% { opacity: 1; }
+    }
+
+    /* Aurora top glow */
+    .aurora {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 340px;
+      background: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(201,168,76,.11) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Layout ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 28px 20px 72px;
+      text-align: center;
+    }
+
+    /* ── Alert strip ── */
+    .strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--gold);
+      border-radius: 100px;
+      padding: 7px 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      background: rgba(201,168,76,.07);
+      animation: ring 2.4s ease-in-out infinite;
+    }
+    @keyframes ring {
+      0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,.35); }
+      50%      { box-shadow: 0 0 0 8px rgba(201,168,76,0); }
+    }
+
+    /* ── Headline ── */
+    .headline {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(22px, 5.5vw, 40px);
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 18px;
+      text-wrap: balance;
+    }
+    .headline em {
+      font-style: normal;
+      color: var(--gold);
+      position: relative;
+    }
+
+    .sub {
+      font-size: clamp(14px, 2.8vw, 17px);
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 300;
+      max-width: 520px;
+      margin: 0 auto 28px;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 24px 0;
+      color: var(--gold-dk);
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dk), transparent);
+    }
+    .divider-sym {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: var(--gold-dk);
+    }
+
+    /* ── Lore box ── */
+    .lore {
+      background: var(--card-bg);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 10px 10px 0;
+      padding: 20px 22px;
+      text-align: left;
+      margin-bottom: 32px;
+    }
+    .lore p {
+      font-size: clamp(13px, 2.4vw, 15px);
+      color: var(--muted);
+      line-height: 1.82;
+      margin-bottom: 12px;
+    }
+    .lore p:last-child { margin-bottom: 0; }
+    .lore strong { color: var(--white); }
+    .lore b { color: var(--gold); font-weight: 700; }
+
+    /* ── Cards instruction ── */
+    .instrucao {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(12px, 2.2vw, 14px);
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      animation: blink 1.8s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: .45; }
+    }
+
+    /* ── Card grid ── */
+    .cards-row {
+      display: flex;
+      gap: clamp(14px, 3vw, 28px);
+      justify-content: center;
+      margin-bottom: 44px;
+      flex-wrap: nowrap;
+    }
+
+    .card-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+    .card-wrap {
+      width: clamp(100px, 26vw, 168px);
+      height: clamp(165px, 43vw, 276px);
+      perspective: 1200px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .card-inner {
+      width: 100%; height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform .75s cubic-bezier(.4,0,.2,1);
+      border-radius: var(--radius);
+      will-change: transform;
+    }
+    .card-wrap.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    /* Back (visible before flip) */
+    .card-back {
+      background: linear-gradient(155deg, #14141e 0%, #1a1a2a 100%);
+      border: 1.5px solid var(--gold-dk);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.7), inset 0 1px 0 rgba(201,168,76,.12);
+      transition: box-shadow .3s ease;
+    }
+    .card-back::before {
+      content: '';
+      position: absolute;
+      inset: 7px;
+      border: 1px solid rgba(201,168,76,.18);
+      border-radius: 8px;
+    }
+    .card-back::after {
+      content: '';
+      position: absolute;
+      inset: 11px;
+      border: 1px solid rgba(201,168,76,.08);
+      border-radius: 5px;
+    }
+    .card-wrap:hover .card-back {
+      box-shadow: 0 16px 50px rgba(0,0,0,.8), 0 0 20px rgba(201,168,76,.15), inset 0 1px 0 rgba(201,168,76,.15);
+    }
+    .card-back-sym {
+      width: clamp(28px, 7vw, 44px);
+      height: clamp(28px, 7vw, 44px);
+      opacity: .6;
+    }
+    .card-back-label {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(8px, 1.8vw, 10px);
+      color: var(--gold-dk);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Front (revealed card image) */
+    .card-front {
+      transform: rotateY(180deg);
+      overflow: hidden;
+      box-shadow: 0 12px 48px rgba(201,168,76,.35), 0 0 0 2px var(--gold);
+    }
+    .card-front img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: var(--radius);
+      display: block;
+    }
+    /* Shimmer after reveal */
+    .card-wrap.flipped .card-front::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.25) 0%, transparent 55%);
+      border-radius: var(--radius);
+      animation: shimmer .9s ease-out forwards;
+    }
+    @keyframes shimmer {
+      0%   { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .card-label {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(9px, 2vw, 11px);
+      color: var(--dim);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* ── Revelation box ── */
+    .revelation {
+      display: none;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .6s ease-out, transform .6s ease-out;
+    }
+    .revelation.show {
+      display: block;
+    }
+    .revelation.animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .rev-card {
+      background: var(--card-bg);
+      border: 1px solid var(--gold);
+      border-radius: 18px;
+      padding: 32px 28px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .rev-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .rev-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,.3), transparent);
+    }
+
+    .rev-icon {
+      width: 52px; height: 52px;
+      margin: 0 auto 16px;
+      background: rgba(201,168,76,.12);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(201,168,76,.25);
+    }
+    .rev-icon svg { width: 26px; height: 26px; stroke: var(--gold); fill: none; }
+
+    .rev-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(16px, 3.5vw, 22px);
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    .rev-body {
+      font-size: clamp(13px, 2.4vw, 15px);
+      color: var(--muted);
+      line-height: 1.82;
+    }
+    .rev-body strong { color: var(--white); }
+
+    /* ── CTA button ── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 500px;
+      background: linear-gradient(135deg, #c9a84c 0%, #e8c96a 50%, #c9a84c 100%);
+      background-size: 200% auto;
+      color: #08080c;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(14px, 2.8vw, 18px);
+      font-weight: 700;
+      letter-spacing: .8px;
+      padding: 20px 36px;
+      border-radius: 10px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background-position .4s ease, transform .2s ease, box-shadow .3s ease;
+      box-shadow: 0 8px 32px rgba(201,168,76,.4);
+      animation: ctaGlow 3s ease-in-out infinite;
+    }
+    .btn-primary svg { width: 20px; height: 20px; fill: #08080c; flex-shrink: 0; }
+    @keyframes ctaGlow {
+      0%,100% { box-shadow: 0 8px 32px rgba(201,168,76,.4); background-position: 0% center; }
+      50%      { box-shadow: 0 10px 44px rgba(201,168,76,.7); background-position: 100% center; }
+    }
+    .btn-primary:hover { transform: translateY(-2px); background-position: 100% center; }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--dim);
+    }
+    .btn-note svg { width: 13px; height: 13px; stroke: var(--dim); fill: none; }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.05);
+      font-size: 11px;
+      color: rgba(160,155,145,.4);
+      line-height: 1.7;
+    }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      .strip, .instrucao, .btn-primary { animation: none; }
+      .card-inner { transition-duration: 0ms; }
+      .revelation { transition: none; }
+      .stars::before, .stars::after { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stars" aria-hidden="true"></div>
+  <div class="aurora" aria-hidden="true"></div>
+
+  <main class="page">
+
+    <!-- Alert strip -->
+    <div class="strip" role="alert">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Mensagem espiritual urgente
+    </div>
+
+    <!-- Headline -->
+    <h1 class="headline">
+      Pai Benedito identificou<br />
+      <em>o bloqueio invisível</em><br />
+      que está prendendo sua prosperidade
+    </h1>
+
+    <p class="sub">
+      Mas antes de revelar a mensagem completa, ele precisa que você confirme sua identidade energética através das cartas sagradas.
+    </p>
+
+    <div class="divider">
+      <span class="divider-sym">✦ &nbsp; ✦ &nbsp; ✦</span>
+    </div>
+
+    <!-- Lore -->
+    <div class="lore">
+      <p>
+        Quando seu quiz foi analisado, <strong>Pai Benedito viu algo que a maioria das pessoas nunca percebe:</strong>
+        não é falta de esforço que está bloqueando seu dinheiro. É uma corrente energética formada há muito tempo — e que continua te prendendo sem você saber.
+      </p>
+      <p>
+        Ele tem uma mensagem urgente para você. <b>Mas ela só pode ser revelada</b> depois que você confirmar sua identidade energética através das 3 cartas sagradas.
+      </p>
+      <p>
+        <strong>Vire cada carta abaixo.</strong> Pai Benedito já sabe quais serão as suas.
+      </p>
+    </div>
+
+    <!-- Instruction -->
+    <p class="instrucao" aria-label="Instrução: clique nas cartas para revelá-las">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      Clique nas cartas para revelá-las
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </p>
+
+    <!-- Cards -->
+    <div class="cards-row" role="group" aria-label="Três cartas sagradas para revelar">
+
+      <div class="card-col">
+        <div class="card-wrap" id="c1" role="button" aria-label="Virar primeira carta" tabindex="0" onclick="flip(1)" onkeydown="if(event.key==='Enter'||event.key===' ')flip(1)">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="cartas/carta1.png" alt="Primeira carta revelada" loading="lazy" />
+            </div>
+            <div class="card-back" aria-hidden="true">
+              <!-- Moon symbol -->
+              <svg class="card-back-sym" viewBox="0 0 44 44" fill="none" stroke="rgba(201,168,76,.6)" stroke-width="1.5" stroke-linecap="round"><circle cx="22" cy="22" r="18"/><path d="M22 8 C14 8 8 14.5 8 22 C8 29.5 14 36 22 36 C17 36 13 29.5 13 22 C13 14.5 17 8 22 8Z" fill="rgba(201,168,76,.12)"/></svg>
+              <span class="card-back-label">Carta I</span>
+            </div>
+          </div>
+        </div>
+        <span class="card-label">1ª carta</span>
+      </div>
+
+      <div class="card-col">
+        <div class="card-wrap" id="c2" role="button" aria-label="Virar segunda carta" tabindex="0" onclick="flip(2)" onkeydown="if(event.key==='Enter'||event.key===' ')flip(2)">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="cartas/carta2.png" alt="Segunda carta revelada" loading="lazy" />
+            </div>
+            <div class="card-back" aria-hidden="true">
+              <!-- Sun symbol -->
+              <svg class="card-back-sym" viewBox="0 0 44 44" fill="none" stroke="rgba(201,168,76,.6)" stroke-width="1.5" stroke-linecap="round"><circle cx="22" cy="22" r="8"/><line x1="22" y1="4" x2="22" y2="10"/><line x1="22" y1="34" x2="22" y2="40"/><line x1="4" y1="22" x2="10" y2="22"/><line x1="34" y1="22" x2="40" y2="22"/><line x1="9" y1="9" x2="13" y2="13"/><line x1="31" y1="31" x2="35" y2="35"/><line x1="35" y1="9" x2="31" y2="13"/><line x1="13" y1="31" x2="9" y2="35"/></svg>
+              <span class="card-back-label">Carta II</span>
+            </div>
+          </div>
+        </div>
+        <span class="card-label">2ª carta</span>
+      </div>
+
+      <div class="card-col">
+        <div class="card-wrap" id="c3" role="button" aria-label="Virar terceira carta" tabindex="0" onclick="flip(3)" onkeydown="if(event.key==='Enter'||event.key===' ')flip(3)">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="cartas/carta3.png" alt="Terceira carta revelada" loading="lazy" />
+            </div>
+            <div class="card-back" aria-hidden="true">
+              <!-- Star symbol -->
+              <svg class="card-back-sym" viewBox="0 0 44 44" fill="none" stroke="rgba(201,168,76,.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22,4 27,16 40,16 30,24 34,38 22,30 10,38 14,24 4,16 17,16"/></svg>
+              <span class="card-back-label">Carta III</span>
+            </div>
+          </div>
+        </div>
+        <span class="card-label">3ª carta</span>
+      </div>
+
+    </div>
+
+    <!-- Revelation (hidden until all 3 flipped) -->
+    <div class="revelation" id="revelation" aria-live="polite">
+      <div class="rev-card">
+        <div class="rev-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h2 class="rev-title">As cartas confirmaram o que Pai Benedito já sabia.</h2>
+        <p class="rev-body">
+          Você carrega um <strong>bloqueio financeiro de origem energética</strong> —
+          provavelmente herdado ou gerado por uma situação do passado que ainda não foi resolvida espiritualmente.<br /><br />
+          A boa notícia: <strong>isso tem solução.</strong> Pai Benedito gravou uma mensagem exclusiva
+          explicando exatamente o que está acontecendo com você — e como quebrar esse ciclo de uma vez por todas.
+        </p>
+      </div>
+
+      <a href="vsl.html" class="btn-primary">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        VER MINHA MENSAGEM URGENTE
+      </a>
+      <p class="btn-note">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Acesso gratuito — disponível por tempo limitado
+      </p>
+    </div>
+
+    <!-- Divider bottom -->
+    <div class="divider" style="margin-top:40px">
+      <span class="divider-sym">✦ &nbsp; ✦ &nbsp; ✦</span>
+    </div>
+
+    <footer class="footer">
+      Este site não é afiliado ao Facebook ou Instagram. Os depoimentos são experiências individuais e podem não refletir os resultados de todos.
+      <br />© 2026 Pai Benedito — Todos os direitos reservados.
+    </footer>
+
+  </main>
+
+  <script>
+    const done = { 1: false, 2: false, 3: false };
+
+    function flip(n) {
+      const el = document.getElementById('c' + n);
+      if (done[n]) return;
+      done[n] = true;
+      el.classList.add('flipped');
+      el.setAttribute('aria-label', `Carta ${n} revelada`);
+      if (navigator.vibrate) navigator.vibrate(40);
+
+      if (done[1] && done[2] && done[3]) {
+        const rev = document.getElementById('revelation');
+        setTimeout(() => {
+          rev.classList.add('show');
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              rev.classList.add('animate');
+              rev.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+          });
+        }, 700);
+      }
+    }
+  </script>
+
+</body>
+</html>
