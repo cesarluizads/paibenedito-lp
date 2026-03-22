@@ -136,41 +136,47 @@
       object-fit: contain;
     }
 
-    /* Sound activation overlay */
-    .sound-overlay {
+    /* Tap-to-start overlay */
+    .tap-overlay {
       position: absolute;
-      bottom: 16px;
-      left: 0; right: 0;
+      inset: 0;
       display: flex;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      transition: opacity .5s ease;
-      z-index: 5;
+      gap: 14px;
+      background: rgba(0,0,0,.72);
+      cursor: pointer;
+      z-index: 10;
+      transition: opacity .4s ease;
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
     }
-    .sound-btn {
-      background: rgba(0,0,0,.88);
-      border: 1.5px solid rgba(201,168,76,.6);
-      border-radius: 100px;
-      padding: 9px 18px;
-      color: var(--gold);
-      font-family: 'Lato', sans-serif;
-      font-size: clamp(10px, 2.2vw, 13px);
-      font-weight: 700;
+    .tap-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .tap-ring {
+      width: 80px; height: 80px;
+      background: var(--gold);
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      gap: 7px;
-      cursor: pointer;
-      animation: soundPulse 2.4s ease-in-out infinite;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      border: none;
-      border: 1.5px solid rgba(201,168,76,.55);
+      justify-content: center;
+      animation: tapPulse 2s ease-in-out infinite;
     }
-    .sound-btn svg { width: 15px; height: 15px; stroke: var(--gold); fill: none; stroke-width: 2; stroke-linecap: round; }
-    .sound-overlay.off { opacity: 0; pointer-events: none; }
-
-    @keyframes soundPulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,.45); }
-      50%      { box-shadow: 0 0 0 10px rgba(201,168,76,0); }
+    .tap-ring svg { width: 32px; height: 32px; fill: #08080c; margin-left: 6px; }
+    .tap-label {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(12px, 2.8vw, 15px);
+      color: var(--gold);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    @keyframes tapPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,.6); }
+      50%      { box-shadow: 0 0 0 22px rgba(201,168,76,0); }
     }
 
     /* ══════════════════════════════════════
@@ -512,8 +518,6 @@
               id="vsl-player"
               src="vsl.mp4"
               preload="auto"
-              autoplay
-              muted
               playsinline
               disablePictureInPicture
               controlsList="nodownload nofullscreen noremoteplayback"
@@ -521,15 +525,12 @@
               Seu navegador não suporta reprodução de vídeo.
             </video>
 
-            <!-- Overlay: apenas ativar som (sem pause) -->
-            <div class="sound-overlay" id="soundOverlay">
-              <button class="sound-btn" id="soundBtn" aria-label="Ativar som do vídeo">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                  <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>
-                </svg>
-                Toque para ativar o som
-              </button>
+            <!-- Tap-to-start (inicia com áudio) -->
+            <div class="tap-overlay" id="tapOverlay" role="button" aria-label="Assistir ao vídeo">
+              <div class="tap-ring" aria-hidden="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+              <p class="tap-label">Toque para assistir</p>
             </div>
           </div>
         </div>
@@ -712,19 +713,22 @@
   </div>
 
   <script>
-    /* ── Autoplay + Som ── */
-    const video        = document.getElementById('vsl-player');
-    const soundOverlay = document.getElementById('soundOverlay');
-    const soundBtn     = document.getElementById('soundBtn');
+    /* ── Tap-to-start (com áudio) ── */
+    const video      = document.getElementById('vsl-player');
+    const tapOverlay = document.getElementById('tapOverlay');
 
-    // Autoplay mutado (compatível com todos os browsers)
-    video.play().catch(() => {});
-
-    // Ativar som ao clicar no botão
-    soundBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
+    tapOverlay.addEventListener('click', () => {
       video.muted = false;
-      soundOverlay.classList.add('off');
+      video.play().then(() => {
+        tapOverlay.classList.add('hidden');
+        setTimeout(() => tapOverlay.remove(), 500);
+      }).catch(() => {
+        // fallback: muted se bloqueado pelo browser
+        video.muted = true;
+        video.play();
+        tapOverlay.classList.add('hidden');
+        setTimeout(() => tapOverlay.remove(), 500);
+      });
     });
 
     // Bloquear barra de espaço (evita pausa acidental)
