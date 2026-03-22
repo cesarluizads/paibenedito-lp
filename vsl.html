@@ -6,6 +6,7 @@
   <title>Mensagem de Pai Benedito — Assista Agora</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -516,7 +517,6 @@
           <div class="video-inner" id="videoInner">
             <video
               id="vsl-player"
-              src="vsl.mp4"
               preload="auto"
               playsinline
               disablePictureInPicture
@@ -713,17 +713,45 @@
   </div>
 
   <script>
-    /* ── Tap-to-start (com áudio) ── */
+    /* ── HLS Player ── */
     const video      = document.getElementById('vsl-player');
     const tapOverlay = document.getElementById('tapOverlay');
+    const HLS_SRC    = 'vsl.m3u8';
 
+    function initHLS() {
+      if (typeof Hls === 'undefined') {
+        // hls.js não carregou — fallback para mp4 direto
+        video.src = 'vsl.mp4';
+        return;
+      }
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          maxBufferLength:        60,   // pré-carrega 60s à frente
+          maxMaxBufferLength:     120,
+          maxBufferSize:          80 * 1000 * 1000, // 80MB buffer
+          startLevel:             -1,
+          enableWorker:           true,
+          lowLatencyMode:         false,
+        });
+        hls.loadSource(HLS_SRC);
+        hls.attachMedia(video);
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Safari — suporte nativo a HLS
+        video.src = HLS_SRC;
+      } else {
+        video.src = 'vsl.mp4';
+      }
+    }
+
+    initHLS();
+
+    /* ── Tap-to-start com áudio ── */
     tapOverlay.addEventListener('click', () => {
       video.muted = false;
       video.play().then(() => {
         tapOverlay.classList.add('hidden');
         setTimeout(() => tapOverlay.remove(), 500);
       }).catch(() => {
-        // fallback: muted se bloqueado pelo browser
         video.muted = true;
         video.play();
         tapOverlay.classList.add('hidden');
