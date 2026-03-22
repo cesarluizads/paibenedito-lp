@@ -747,16 +747,23 @@
 
     /* ── Tap-to-start com áudio ── */
     tapOverlay.addEventListener('click', () => {
-      video.muted = false;
-      video.play().then(() => {
-        tapOverlay.classList.add('hidden');
-        setTimeout(() => tapOverlay.remove(), 500);
-      }).catch(() => {
-        video.muted = true;
-        video.play();
-        tapOverlay.classList.add('hidden');
-        setTimeout(() => tapOverlay.remove(), 500);
-      });
+      tapOverlay.classList.add('hidden');
+      setTimeout(() => tapOverlay.remove(), 500);
+
+      function doPlay() {
+        video.muted = false;
+        video.play().catch(() => {
+          video.muted = true;
+          video.play().catch(e => console.warn('[VSL] play failed:', e));
+        });
+      }
+
+      // Se já tem dados suficientes, toca direto; senão espera estar pronto
+      if (video.readyState >= 3) {
+        doPlay();
+      } else {
+        video.addEventListener('canplay', doPlay, { once: true });
+      }
     });
 
     // Bloquear barra de espaço (evita pausa acidental)
