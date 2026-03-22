@@ -391,6 +391,33 @@
       line-height: 1.82;
     }
     .rev-body strong { color: var(--white); }
+    .rev-body b { color: var(--gold-lt); font-weight: 700; }
+
+    /* ── Alert revelation ── */
+    .rev-warn {
+      width: 58px; height: 58px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .rev-warn svg { width: 58px; height: 58px; }
+    .rev-alert-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(18px, 4.5vw, 26px);
+      font-weight: 900;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .rev-sep {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,.35), transparent);
+      margin: 18px 0;
+    }
 
     /* ── CTA button ── */
     .btn-primary {
@@ -485,14 +512,14 @@
     <!-- Lore -->
     <div class="lore">
       <p>
-        Quando seu quiz foi analisado, <strong>Pai Benedito viu algo que a maioria das pessoas nunca percebe:</strong>
+        <strong>Pai Benedito viu algo que a maioria das pessoas nunca percebe:</strong>
         não é falta de esforço que está bloqueando seu dinheiro. É uma corrente energética formada há muito tempo — e que continua te prendendo sem você saber.
       </p>
       <p>
-        Ele tem uma mensagem urgente para você. <b>Mas ela só pode ser revelada</b> depois que você confirmar sua identidade energética através das 3 cartas sagradas.
+        Ele tem uma mensagem urgente para você. <b>Mas ela só pode ser revelada</b> depois que você confirmar sua identidade energética através das cartas sagradas.
       </p>
       <p>
-        <strong>Vire cada carta abaixo.</strong> Pai Benedito já sabe quais serão as suas.
+        <strong>Escolha 3 cartas abaixo</strong> — deixe sua intuição guiar a escolha.
       </p>
     </div>
 
@@ -593,16 +620,38 @@
     <!-- Revelation (hidden until all 3 flipped) -->
     <div class="revelation" id="revelation" aria-live="polite">
       <div class="rev-card">
-        <div class="rev-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+
+        <!-- Ícone de alerta -->
+        <div class="rev-warn" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" fill="rgba(201,168,76,.15)" stroke="#c9a84c" stroke-width="1.5"/>
+            <line x1="12" y1="9" x2="12" y2="13" stroke="#e8c96a" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="17" r="1" fill="#e8c96a"/>
+          </svg>
         </div>
-        <h2 class="rev-title">As cartas confirmaram o que Pai Benedito já sabia.</h2>
+
+        <h2 class="rev-alert-title">Intervenção do Destino!</h2>
+
         <p class="rev-body">
-          Você carrega um <strong>bloqueio financeiro de origem energética</strong> —
-          provavelmente herdado ou gerado por uma situação do passado que ainda não foi resolvida espiritualmente.<br /><br />
-          A boa notícia: <strong>isso tem solução.</strong> Pai Benedito gravou uma mensagem exclusiva
-          explicando exatamente o que está acontecendo com você — e como quebrar esse ciclo de uma vez por todas.
+          <strong>PARE TUDO:</strong> As cartas acabaram de revelar algo <b>CHOCANTE</b> sobre o seu futuro.
+          Uma força superior está tentando comunicar algo <b>CRUCIAL</b> para você — agora.
         </p>
+
+        <div class="rev-sep"></div>
+
+        <p class="rev-body">
+          O que as cartas mostraram é <strong>tão raro</strong> que acontece com apenas
+          <b>1 em cada 10.000 pessoas</b>. Seu destino está em um ponto de virada <b>decisivo</b> —
+          e a janela para agir está se fechando.
+        </p>
+
+        <div class="rev-sep"></div>
+
+        <p class="rev-body">
+          <strong>Você PRECISA descobrir esta mensagem IMEDIATAMENTE —
+          cada minuto que passa pode mudar tudo.</strong>
+        </p>
+
       </div>
 
       <a href="vsl.html" class="btn-primary">

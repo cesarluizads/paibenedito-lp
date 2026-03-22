@@ -547,6 +547,68 @@
     }
     .sticky-btn svg { width: 18px; height: 18px; fill: var(--black); }
 
+    /* ── Bonus section ── */
+    .bonus-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 28px 14px;
+      border-top: 1px solid rgba(201,168,76,.12);
+      background: rgba(201,168,76,.03);
+    }
+    .bonus-label {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .bonus-badge {
+      background: var(--gold);
+      color: var(--black);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+    .bonus-items { padding: 0 28px 8px; }
+    .bonus-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .bonus-item:last-child { border-bottom: none; }
+    .bonus-num {
+      width: 24px; height: 24px;
+      background: rgba(201,168,76,.1);
+      border: 1px solid rgba(201,168,76,.28);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gold);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .bonus-text strong { display: block; font-size: 13.5px; color: var(--white); margin-bottom: 3px; line-height: 1.4; }
+    .bonus-text span { font-size: 12px; color: var(--muted); line-height: 1.55; }
+    .bonus-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .bonus-tag {
+      font-size: 10px;
+      color: var(--gold-dk);
+      background: rgba(201,168,76,.07);
+      border: 1px solid rgba(201,168,76,.18);
+      border-radius: 100px;
+      padding: 2px 9px;
+    }
+
     /* ── Reduced motion ── */
     @media (prefers-reduced-motion: reduce) {
       .btn-buy, .play-ring { animation: none; }
@@ -585,7 +647,7 @@
           <video
             id="vsl-player"
             src="vsl.mp4"
-            preload="metadata"
+            preload="auto"
             playsinline
             disablePictureInPicture
             controlsList="nodownload nofullscreen noremoteplayback"
@@ -666,6 +728,60 @@
             <span>Todos os materiais entregues direto no seu WhatsApp em até 5 minutos.</span>
           </div>
         </div>
+      </div>
+
+      <!-- Bonus section -->
+      <div class="bonus-header">
+        <span class="bonus-label">Bônus exclusivos inclusos</span>
+        <span class="bonus-badge">Grátis</span>
+      </div>
+      <div class="bonus-items">
+
+        <div class="bonus-item">
+          <div class="bonus-num">1</div>
+          <div class="bonus-text">
+            <strong>Círculo de Luz no WhatsApp</strong>
+            <span>Participe de um grupo seleto com mensagens diárias de orientação espiritual e mantras poderosos. A energia coletiva amplifica suas vibrações e cria um campo de proteção e manifestação acelerada.</span>
+            <div class="bonus-tags"><span class="bonus-tag">Comunidade</span><span class="bonus-tag">Proteção</span></div>
+          </div>
+        </div>
+
+        <div class="bonus-item">
+          <div class="bonus-num">2</div>
+          <div class="bonus-text">
+            <strong>Tarot dos Anjos Personalizado</strong>
+            <span>Receba uma leitura exclusiva do Tarot dos Anjos que revela seu roteiro divino para os próximos passos. Identifica bloqueios ocultos e ilumina o caminho preparado especialmente para você.</span>
+            <div class="bonus-tags"><span class="bonus-tag">Orientação</span><span class="bonus-tag">Desbloqueio</span></div>
+          </div>
+        </div>
+
+        <div class="bonus-item">
+          <div class="bonus-num">3</div>
+          <div class="bonus-text">
+            <strong>Áudio de Meditação 432 Hz</strong>
+            <span>Transforme sua energia em apenas 7 minutos com esta meditação guiada na frequência angelical de 432 Hz — para ouvir durante o ritual e amplificar sua conexão espiritual.</span>
+            <div class="bonus-tags"><span class="bonus-tag">Frequência</span><span class="bonus-tag">Harmonia</span></div>
+          </div>
+        </div>
+
+        <div class="bonus-item">
+          <div class="bonus-num">4</div>
+          <div class="bonus-text">
+            <strong>As Orações Curadoras do Monge</strong>
+            <span>Coleção de 7 orações ancestrais cuidadosamente selecionadas para criar um campo de proteção espiritual e restaurar sua conexão com o divino.</span>
+            <div class="bonus-tags"><span class="bonus-tag">Proteção</span><span class="bonus-tag">Cura</span></div>
+          </div>
+        </div>
+
+        <div class="bonus-item">
+          <div class="bonus-num">5</div>
+          <div class="bonus-text">
+            <strong>Bônus Secreto Premium</strong>
+            <span>Um presente espiritual extraordinário que Pai Benedito mantém em segredo até o momento certo — criado para amplificar sua capacidade de manifestação e abrir portais de abundância.</span>
+            <div class="bonus-tags"><span class="bonus-tag">Exclusivo</span><span class="bonus-tag">Transformador</span></div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Price -->
@@ -853,16 +969,40 @@
     // Prevent context-menu download on video
     video.addEventListener('contextmenu', e => e.preventDefault());
 
-    /* ── Offer lock — reveal after 10 min (600s) ── */
+    /* ── Offer lock + scroll block — reveal after 10 min (600s) ── */
     const offerSection = document.getElementById('offer-section');
     const stickyCta    = document.querySelector('.sticky-cta');
     let offerRevealed  = false;
+    let scrollLimit    = 9999;
+
+    // Compute max allowed scroll (just below the video notice)
+    function updateScrollLimit() {
+      const notice = document.querySelector('.video-notice');
+      if (notice) {
+        scrollLimit = notice.getBoundingClientRect().bottom + window.scrollY + 24;
+      }
+    }
+    window.addEventListener('load',   updateScrollLimit);
+    window.addEventListener('resize', updateScrollLimit);
+    setTimeout(updateScrollLimit, 200);
+
+    // Enforce scroll limit while offer is locked
+    function enforceScrollLimit() {
+      if (!offerRevealed && window.scrollY > scrollLimit) {
+        window.scrollTo({ top: scrollLimit, behavior: 'instant' });
+      }
+    }
+    window.addEventListener('scroll', enforceScrollLimit, { passive: false });
 
     function revealOffer() {
       if (offerRevealed) return;
       offerRevealed = true;
       offerSection.classList.add('reveal');
       if (stickyCta) stickyCta.classList.add('offer-ready');
+      // Scroll to offer section smoothly
+      setTimeout(() => {
+        offerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
     }
 
     video.addEventListener('timeupdate', () => {
