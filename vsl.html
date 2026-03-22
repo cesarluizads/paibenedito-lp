@@ -7,14 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── Tokens ── */
     :root {
       --black:   #08080c;
       --dark1:   #10101a;
-      --dark2:   #16162a;
       --card:    #0d0d18;
       --gold:    #c9a84c;
       --gold-lt: #e8c96a;
@@ -24,1016 +21,742 @@
       --dim:     #5a5550;
       --green:   #34c759;
       --red:     #b02020;
-      --radius:  16px;
     }
 
-    /* ── Base ── */
     html { scroll-behavior: smooth; }
+
     body {
       background: var(--black);
       color: var(--white);
       font-family: 'Lato', sans-serif;
-      overflow-x: hidden;
+      overflow: hidden; /* locked until offer revealed */
+    }
+    body.unlocked { overflow: auto; }
+
+    /* ══════════════════════════════════════
+       VSL SCREEN — full viewport, no scroll
+    ══════════════════════════════════════ */
+    .vsl-screen {
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    /* ── Urgency bar ── */
+    /* Urgency bar */
     .urgency-bar {
-      background: linear-gradient(90deg, #7a1515 0%, var(--red) 50%, #7a1515 100%);
+      background: linear-gradient(90deg, #6a1010 0%, var(--red) 50%, #6a1010 100%);
       text-align: center;
-      padding: 13px 20px;
-      font-size: clamp(11px, 2.2vw, 13px);
+      padding: 9px 16px;
+      font-size: clamp(9px, 1.9vw, 11px);
       font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: #fff;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 7px;
     }
-    .urgency-bar svg { width: 15px; height: 15px; fill: #fff; flex-shrink: 0; }
+    .urgency-bar svg { width: 13px; height: 13px; fill: #fff; flex-shrink: 0; }
 
-    /* ── Layout ── */
-    .page {
+    /* Inner page (flex column, fills remaining height) */
+    .vsl-page {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
       max-width: 760px;
       margin: 0 auto;
-      padding: 0 20px 80px;
+      width: 100%;
+      padding: 0 14px;
     }
 
-    /* ── Header ── */
+    /* Compact header */
     .header {
       text-align: center;
-      padding: 48px 0 36px;
+      padding: 10px 0 6px;
+      flex-shrink: 0;
     }
-
     .deco-line {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      justify-content: center;
-      margin-bottom: 24px;
+      display: flex; align-items: center; gap: 10px;
+      justify-content: center; margin-bottom: 8px;
     }
     .deco-line::before, .deco-line::after {
-      content: '';
-      width: 48px; height: 1px;
+      content: ''; width: 32px; height: 1px;
       background: linear-gradient(90deg, transparent, var(--gold-dk));
     }
     .deco-line::after { background: linear-gradient(90deg, var(--gold-dk), transparent); }
-    .deco-sym { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold-dk); letter-spacing: 4px; }
+    .deco-sym { font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold-dk); letter-spacing: 3px; }
 
     .headline {
       font-family: 'Cinzel', serif;
-      font-size: clamp(20px, 4.5vw, 34px);
+      font-size: clamp(13px, 2.8vw, 20px);
       font-weight: 900;
-      line-height: 1.25;
-      margin-bottom: 16px;
-      text-wrap: balance;
+      line-height: 1.3;
     }
     .headline em { font-style: normal; color: var(--gold); }
 
-    .subhead {
-      font-size: clamp(13px, 2.4vw, 16px);
-      color: var(--muted);
-      line-height: 1.7;
-      font-weight: 300;
-      max-width: 560px;
-      margin: 0 auto;
+    /* Video section — fills remaining space */
+    .video-section {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0 10px;
     }
-
-    /* ── Video ── */
-    .video-section { margin: 28px auto 12px; max-width: 400px; }
 
     .video-frame {
       background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dk) 50%, var(--gold) 100%);
-      border-radius: 18px;
+      border-radius: 14px;
       padding: 3px;
+      height: 100%;
+      width: auto;
+      aspect-ratio: 9 / 16;
+      display: flex;
     }
 
     .video-inner {
       background: #000;
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
-      aspect-ratio: 9/16;
+      height: 100%;
+      width: 100%;
       position: relative;
     }
 
-    /* ── Custom VSL player ── */
     #vsl-player {
       width: 100%; height: 100%;
       display: block;
       background: #000;
-      border-radius: 16px;
+      border-radius: 12px;
       object-fit: contain;
     }
-    .vpl-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: opacity .25s ease;
-    }
-    .vpl-btn {
-      width: 72px; height: 72px;
-      background: rgba(201,168,76,.88);
-      border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform .2s ease, background .2s ease;
-      box-shadow: 0 0 0 0 rgba(201,168,76,.5);
-      animation: playPulse 2s ease-in-out infinite;
-    }
-    .vpl-btn:hover { transform: scale(1.08); background: var(--gold); }
-    .vpl-btn svg { width: 28px; height: 28px; fill: #08080c; }
-    .vpl-pause { display: none; margin-left: 0; }
-    .vpl-play  { margin-left: 5px; }
-    /* When playing */
-    .video-inner.playing .vpl-play   { display: none; }
-    .video-inner.playing .vpl-pause  { display: block; }
-    .video-inner.playing .vpl-overlay { opacity: 0; }
-    .video-inner.playing .vpl-overlay:hover { opacity: 1; }
 
-    /* ── Offer lock ── */
+    /* Sound activation overlay */
+    .sound-overlay {
+      position: absolute;
+      bottom: 16px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      transition: opacity .5s ease;
+      z-index: 5;
+    }
+    .sound-btn {
+      background: rgba(0,0,0,.88);
+      border: 1.5px solid rgba(201,168,76,.6);
+      border-radius: 100px;
+      padding: 9px 18px;
+      color: var(--gold);
+      font-family: 'Lato', sans-serif;
+      font-size: clamp(10px, 2.2vw, 13px);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      animation: soundPulse 2.4s ease-in-out infinite;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: none;
+      border: 1.5px solid rgba(201,168,76,.55);
+    }
+    .sound-btn svg { width: 15px; height: 15px; stroke: var(--gold); fill: none; stroke-width: 2; stroke-linecap: round; }
+    .sound-overlay.off { opacity: 0; pointer-events: none; }
+
+    @keyframes soundPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,.45); }
+      50%      { box-shadow: 0 0 0 10px rgba(201,168,76,0); }
+    }
+
+    /* ══════════════════════════════════════
+       OFFER PAGE — revealed after 10 min
+    ══════════════════════════════════════ */
+    .offer-page {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 20px 88px;
+    }
+
     #offer-section {
       opacity: 0;
       pointer-events: none;
-      transform: translateY(28px);
-      transition: opacity .8s ease-out, transform .8s ease-out;
+      transform: translateY(32px);
+      transition: opacity .9s ease-out, transform .9s ease-out;
     }
     #offer-section.reveal {
       opacity: 1;
       pointer-events: auto;
       transform: translateY(0);
     }
-    .sticky-cta { display: none !important; }
-    .sticky-cta.offer-ready { display: block !important; }
 
-    @keyframes playPulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,.5); }
-      50%      { box-shadow: 0 0 0 16px rgba(201,168,76,0); }
+    /* Intro "Isto não é uma compra" */
+    .offer-intro {
+      text-align: center;
+      padding: 56px 0 40px;
+    }
+    .offer-intro-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(28px, 7vw, 46px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .offer-intro-title em {
+      font-style: normal;
+      color: var(--gold);
+      display: block;
+    }
+    .offer-intro-body {
+      font-size: clamp(15px, 2.8vw, 17px);
+      color: var(--muted);
+      line-height: 1.78;
+      max-width: 460px;
+      margin: 0 auto 32px;
     }
 
-    .video-notice {
+    .offer-quote {
+      background: var(--card);
+      border-left: 3px solid rgba(201,168,76,.5);
+      border-radius: 0 14px 14px 0;
+      padding: 22px 26px;
+      margin: 0 auto 28px;
+      text-align: left;
+    }
+    .offer-quote p {
+      font-size: 15px;
+      color: var(--white);
+      line-height: 1.78;
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+    .offer-quote cite {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    .offer-tagline {
+      font-size: clamp(15px, 2.8vw, 17px);
+      color: var(--white);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .offer-subtext {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.72;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    /* Tiers title */
+    .tiers-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(22px, 5.5vw, 36px);
+      font-weight: 900;
+      text-align: center;
+      color: var(--gold);
+      margin: 52px 0 24px;
+    }
+
+    /* ── Tier cards ── */
+    .tiers { display: flex; flex-direction: column; gap: 14px; margin-bottom: 52px; }
+
+    .tier {
+      border-radius: 20px;
+      overflow: hidden;
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      transition: transform .2s ease, box-shadow .2s ease;
+      cursor: pointer;
+    }
+    .tier:hover { transform: translateY(-3px); }
+
+    /* Top */
+    .tier-top {
+      background: linear-gradient(145deg, #1c0e00, #301800);
+      border: 2px solid var(--gold);
+      box-shadow: 0 8px 32px rgba(201,168,76,.22);
+    }
+    .tier-top:hover { box-shadow: 0 14px 48px rgba(201,168,76,.38); }
+
+    /* Mid */
+    .tier-mid {
+      background: linear-gradient(145deg, #0e0e1e, #181830);
+      border: 1.5px solid rgba(201,168,76,.38);
+    }
+    .tier-mid:hover { box-shadow: 0 10px 36px rgba(201,168,76,.2); }
+
+    /* Entry */
+    .tier-entry {
+      background: var(--card);
+      border: 1px solid rgba(201,168,76,.18);
+    }
+
+    .tier-header {
+      text-align: center;
+      padding: 13px 20px 10px;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(10px, 2vw, 13px);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .tier-top   .tier-header { color: var(--gold-lt); background: rgba(201,168,76,.1);   border-bottom: 1px solid rgba(201,168,76,.15); }
+    .tier-mid   .tier-header { color: var(--gold);    background: rgba(201,168,76,.06);  border-bottom: 1px solid rgba(201,168,76,.1); }
+    .tier-entry .tier-header { color: var(--muted);  background: rgba(255,255,255,.025); border-bottom: 1px solid rgba(255,255,255,.05); }
+
+    .tier-body {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px 20px;
+      gap: 16px;
+    }
+
+    .tier-items { flex: 1; list-style: none; }
+    .tier-items li {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-size: clamp(11px, 2vw, 13px);
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 5px;
+    }
+    .tier-items li::before {
+      content: '✦';
+      color: var(--gold-dk);
+      font-size: 8px;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .tier-price { text-align: right; flex-shrink: 0; }
+    .tier-installment { font-size: 11px; color: var(--muted); margin-bottom: 0; min-height: 16px; }
+    .tier-installment strong { font-size: 13px; color: var(--white); }
+    .tier-val {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(44px, 10vw, 58px);
+      font-weight: 900;
+      line-height: 1;
+    }
+    .tier-top   .tier-val { color: var(--gold-lt); }
+    .tier-mid   .tier-val { color: var(--gold); }
+    .tier-entry .tier-val { color: var(--white); }
+    .tier-val sup { font-size: 18px; vertical-align: super; font-weight: 400; }
+    .tier-avista { font-size: 10px; color: var(--dim); margin-top: 4px; }
+
+    .tier-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      margin-top: 12px;
-      font-size: 12px;
-      color: var(--dim);
-    }
-    .video-notice svg { width: 13px; height: 13px; stroke: var(--dim); fill: none; }
-
-    /* ── Section divider ── */
-    .section-sep {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin: 52px 0 40px;
+      gap: 8px;
+      margin: 0 18px 18px;
+      padding: 15px;
+      border-radius: 12px;
       font-family: 'Cinzel', serif;
-      font-size: 11px;
-      color: var(--gold-dk);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      text-align: center;
+      font-size: clamp(12px, 2.5vw, 15px);
+      font-weight: 700;
+      letter-spacing: .5px;
+      color: var(--black);
+      background: linear-gradient(135deg, #c9a84c 0%, #e8c96a 50%, #c9a84c 100%);
+      background-size: 200% auto;
+      animation: tierGlow 3s ease-in-out infinite;
     }
-    .section-sep::before, .section-sep::after {
-      content: '';
-      flex: 1;
-      height: 1px;
+    .tier-btn svg { width: 17px; height: 17px; stroke: var(--black); fill: none; stroke-width: 2; stroke-linecap: round; }
+
+    @keyframes tierGlow {
+      0%,100% { box-shadow: 0 5px 22px rgba(201,168,76,.4); background-position: 0% center; }
+      50%      { box-shadow: 0 8px 36px rgba(201,168,76,.7); background-position: 100% center; }
+    }
+
+    /* Divider */
+    .offer-sep {
+      display: flex; align-items: center; gap: 14px;
+      margin: 8px 0 44px;
+      font-family: 'Cinzel', serif; font-size: 10px;
+      color: var(--gold-dk); letter-spacing: 2px; text-transform: uppercase;
+    }
+    .offer-sep::before, .offer-sep::after {
+      content: ''; flex: 1; height: 1px;
       background: linear-gradient(90deg, transparent, var(--gold-dk), transparent);
     }
 
-    /* ── Offer headline ── */
-    .offer-head { text-align: center; margin-bottom: 32px; }
-    .offer-head h2 {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(17px, 3.8vw, 27px);
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 12px;
-    }
-    .offer-head h2 em { font-style: normal; color: var(--gold); }
-    .offer-head p { font-size: 15px; color: var(--muted); line-height: 1.72; }
-
-    /* ── Product card ── */
-    .product-card {
-      background: var(--card);
-      border: 1px solid var(--gold);
-      border-radius: 22px;
-      overflow: hidden;
-      margin-bottom: 40px;
-      position: relative;
-    }
-    .product-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    }
-
-    .prod-head {
-      background: rgba(201,168,76,.07);
-      padding: 28px 28px 22px;
-      text-align: center;
-      border-bottom: 1px solid rgba(201,168,76,.12);
-    }
-    .prod-badge {
-      display: inline-block;
-      background: var(--gold);
-      color: var(--black);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 4px 14px;
-      border-radius: 100px;
-      margin-bottom: 14px;
-    }
-    .prod-name {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(18px, 3.5vw, 26px);
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .prod-sub { font-size: 13px; color: var(--muted); }
-
-    /* Includes */
-    .includes { padding: 24px 28px; }
-    .includes-label {
-      font-family: 'Cinzel', serif;
-      font-size: 11px;
-      color: var(--gold);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-
-    .item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 13px 0;
-      border-bottom: 1px solid rgba(255,255,255,.04);
-    }
-    .item:last-child { border-bottom: none; }
-
-    .item-check {
-      width: 26px; height: 26px;
-      background: rgba(52,199,89,.13);
-      border: 1px solid rgba(52,199,89,.25);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .item-check svg { width: 13px; height: 13px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-
-    .item-text strong { display: block; font-size: 14px; color: var(--white); margin-bottom: 3px; line-height: 1.4; }
-    .item-text span { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
-
-    /* Price */
-    .price-box {
-      background: rgba(201,168,76,.06);
-      border-top: 1px solid rgba(201,168,76,.14);
-      padding: 28px 28px 20px;
-      text-align: center;
-    }
-    .price-de { font-size: 13px; color: var(--dim); text-decoration: line-through; margin-bottom: 4px; }
-    .price-val {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(44px, 10vw, 62px);
-      font-weight: 900;
-      color: var(--gold);
-      line-height: 1;
-    }
-    .price-val sup { font-size: 22px; vertical-align: super; font-weight: 400; }
-    .price-note { font-size: 12px; color: var(--dim); margin-top: 6px; }
-
-    /* Order bump */
-    .bump {
-      margin: 0 20px 20px;
-      background: rgba(52,199,89,.05);
-      border: 1.5px dashed rgba(52,199,89,.35);
-      border-radius: 12px;
-      padding: 16px 18px;
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      cursor: pointer;
-      transition: background .2s ease;
-    }
-    .bump:hover { background: rgba(52,199,89,.08); }
-
-    .bump-cb {
-      width: 20px; height: 20px;
-      accent-color: var(--green);
-      cursor: pointer;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .bump-label strong { display: block; font-size: 13px; color: var(--green); margin-bottom: 3px; }
-    .bump-label span { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
-    /* CTA */
-    .cta-zone {
-      padding: 4px 20px 28px;
-      text-align: center;
-    }
-
-    .btn-buy {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      background: linear-gradient(135deg, #c9a84c 0%, #e8c96a 50%, #c9a84c 100%);
-      background-size: 200% auto;
-      color: var(--black);
-      font-family: 'Cinzel', serif;
-      font-size: clamp(14px, 2.8vw, 18px);
-      font-weight: 700;
-      letter-spacing: .8px;
-      padding: 22px 24px;
-      border-radius: 12px;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      animation: buyGlow 3s ease-in-out infinite;
-      transition: transform .2s ease;
-    }
-    .btn-buy svg { width: 20px; height: 20px; fill: var(--black); flex-shrink: 0; }
-    @keyframes buyGlow {
-      0%,100% { box-shadow: 0 8px 30px rgba(201,168,76,.4); background-position: 0% center; }
-      50%      { box-shadow: 0 10px 44px rgba(201,168,76,.7); background-position: 100% center; }
-    }
-    .btn-buy:hover { transform: translateY(-2px); }
-
-    .trust-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-top: 14px;
-    }
-    .trust-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11.5px;
-      color: var(--dim);
-    }
-    .trust-item svg { width: 13px; height: 13px; stroke: var(--dim); fill: none; stroke-width: 2; stroke-linecap: round; }
-
-    /* ── Guarantee ── */
+    /* Guarantee */
     .guarantee {
       background: var(--card);
       border: 1px solid rgba(52,199,89,.2);
       border-radius: 18px;
-      padding: 28px 24px;
+      padding: 26px 22px;
       display: flex;
-      gap: 20px;
+      gap: 18px;
       align-items: center;
-      margin-bottom: 52px;
+      margin-bottom: 48px;
     }
     .guarantee-icon {
-      width: 64px; height: 64px;
+      width: 60px; height: 60px;
       background: rgba(52,199,89,.1);
       border-radius: 50%;
       border: 1px solid rgba(52,199,89,.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
-    .guarantee-icon svg { width: 32px; height: 32px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; }
-    .guarantee h3 { font-family: 'Cinzel', serif; font-size: 16px; color: var(--green); margin-bottom: 8px; }
+    .guarantee-icon svg { width: 30px; height: 30px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; }
+    .guarantee h3 { font-family: 'Cinzel', serif; font-size: 15px; color: var(--green); margin-bottom: 7px; }
     .guarantee p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    @media (max-width: 480px) { .guarantee { flex-direction: column; text-align: center; } }
 
-    @media (max-width: 520px) {
-      .guarantee { flex-direction: column; text-align: center; }
-    }
+    /* Testimonials */
+    .section-title { font-family: 'Cinzel', serif; font-size: clamp(16px, 3.5vw, 21px); text-align: center; margin-bottom: 6px; }
+    .section-sub { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 24px; }
 
-    /* ── Testimonials ── */
-    .section-title {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(16px, 3.5vw, 22px);
-      text-align: center;
-      margin-bottom: 6px;
-    }
-    .section-sub { text-align: center; font-size: 14px; color: var(--muted); margin-bottom: 28px; }
-
-    .depos {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 52px;
-    }
-    @media (max-width: 520px) { .depos { grid-template-columns: 1fr; } }
+    .depos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 52px; }
+    @media (max-width: 480px) { .depos { grid-template-columns: 1fr; } }
 
     .depo {
       background: var(--card);
       border: 1px solid rgba(255,255,255,.05);
       border-radius: 14px;
-      padding: 20px;
-      text-align: left;
-      position: relative;
+      padding: 18px;
       transition: border-color .25s ease;
     }
-    .depo:hover { border-color: rgba(201,168,76,.25); }
-
+    .depo:hover { border-color: rgba(201,168,76,.22); }
     .depo-stars { color: var(--gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 10px; }
-
     .depo-quote {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-bottom: 14px;
-      font-style: italic;
-      position: relative;
-      padding-left: 14px;
+      font-size: 12.5px; color: var(--muted); line-height: 1.7;
+      margin-bottom: 13px; font-style: italic;
+      position: relative; padding-left: 12px;
     }
     .depo-quote::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 2px;
-      background: var(--gold-dk);
-      border-radius: 2px;
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 2px; background: var(--gold-dk); border-radius: 2px;
     }
-
-    .depo-author {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .depo-author { display: flex; align-items: center; gap: 9px; }
     .depo-avatar {
-      width: 34px; height: 34px;
-      border-radius: 50%;
+      width: 32px; height: 32px; border-radius: 50%;
       background: linear-gradient(135deg, var(--gold-dk), var(--gold));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Cinzel', serif;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--black);
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700;
+      color: var(--black); flex-shrink: 0;
     }
     .depo-info strong { display: block; font-size: 12px; color: var(--white); }
     .depo-info span { font-size: 11px; color: var(--dim); }
 
-    /* ── Final CTA ── */
-    .final-cta {
-      text-align: center;
-      padding: 20px 0 44px;
-    }
-    .final-cta h2 {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(17px, 3.5vw, 24px);
-      margin-bottom: 10px;
-      line-height: 1.35;
-    }
-    .final-cta h2 em { font-style: normal; color: var(--gold); }
-    .final-cta p { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
-    .final-cta .btn-buy { max-width: 540px; margin: 0 auto; }
-
-    /* ── Footer ── */
+    /* Footer */
     .footer {
       text-align: center;
       padding-top: 28px;
       border-top: 1px solid rgba(255,255,255,.05);
       font-size: 11px;
-      color: rgba(160,155,145,.4);
-      line-height: 1.75;
+      color: rgba(160,155,145,.35);
+      line-height: 1.8;
     }
 
-    /* ── Mobile sticky CTA ── */
+    /* Mobile sticky CTA */
     .sticky-cta {
       display: none;
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      padding: 12px 16px 16px;
-      background: linear-gradient(to top, var(--black) 60%, transparent);
+      padding: 10px 16px 14px;
+      background: linear-gradient(to top, var(--black) 65%, transparent);
       z-index: 50;
     }
-    @media (max-width: 600px) { .sticky-cta { display: block; } }
+    .sticky-cta.offer-ready { display: block; }
     .sticky-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
       width: 100%;
       background: linear-gradient(135deg, #c9a84c, #e8c96a);
       color: var(--black);
-      font-family: 'Cinzel', serif;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 16px;
-      border-radius: 10px;
-      text-decoration: none;
+      font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700;
+      padding: 15px; border-radius: 10px; text-decoration: none;
       box-shadow: 0 -4px 24px rgba(201,168,76,.3);
     }
-    .sticky-btn svg { width: 18px; height: 18px; fill: var(--black); }
+    .sticky-btn svg { width: 16px; height: 16px; stroke: var(--black); fill: none; stroke-width: 2.5; stroke-linecap: round; }
 
-    /* ── Bonus section ── */
-    .bonus-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 28px 14px;
-      border-top: 1px solid rgba(201,168,76,.12);
-      background: rgba(201,168,76,.03);
-    }
-    .bonus-label {
-      font-family: 'Cinzel', serif;
-      font-size: 11px;
-      color: var(--gold);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    .bonus-badge {
-      background: var(--gold);
-      color: var(--black);
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      border-radius: 100px;
-    }
-    .bonus-items { padding: 0 28px 8px; }
-    .bonus-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255,255,255,.04);
-    }
-    .bonus-item:last-child { border-bottom: none; }
-    .bonus-num {
-      width: 24px; height: 24px;
-      background: rgba(201,168,76,.1);
-      border: 1px solid rgba(201,168,76,.28);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Cinzel', serif;
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--gold);
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .bonus-text strong { display: block; font-size: 13.5px; color: var(--white); margin-bottom: 3px; line-height: 1.4; }
-    .bonus-text span { font-size: 12px; color: var(--muted); line-height: 1.55; }
-    .bonus-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-    .bonus-tag {
-      font-size: 10px;
-      color: var(--gold-dk);
-      background: rgba(201,168,76,.07);
-      border: 1px solid rgba(201,168,76,.18);
-      border-radius: 100px;
-      padding: 2px 9px;
-    }
-
-    /* ── Reduced motion ── */
     @media (prefers-reduced-motion: reduce) {
-      .btn-buy, .play-ring { animation: none; }
+      .sound-btn, .tier-btn { animation: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Urgency bar -->
-  <div class="urgency-bar" role="alert">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-    Assista agora — esta mensagem pode ser retirada a qualquer momento
-  </div>
+  <!-- ══════════ VSL SCREEN — ocupa 100vh, sem scroll ══════════ -->
+  <div class="vsl-screen">
 
-  <div class="page">
+    <div class="urgency-bar" role="alert">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      Assista agora — esta mensagem pode ser retirada a qualquer momento
+    </div>
 
-    <!-- Header -->
-    <header class="header">
-      <div class="deco-line">
-        <span class="deco-sym">✦ &nbsp; ✦ &nbsp; ✦</span>
-      </div>
-      <h1 class="headline">
-        A mensagem de Pai Benedito<br />
-        sobre <em>o seu bloqueio financeiro</em>
-      </h1>
-      <p class="subhead">
-        Assista ao vídeo até o final. O que ele vai revelar sobre a sua situação
-        é mais urgente do que você imagina.
-      </p>
-    </header>
+    <div class="vsl-page">
 
-    <!-- Video -->
-    <section class="video-section" aria-label="Vídeo da mensagem">
-      <div class="video-frame">
-        <div class="video-inner" id="videoInner">
-          <video
-            id="vsl-player"
-            src="vsl.mp4"
-            preload="auto"
-            playsinline
-            disablePictureInPicture
-            controlsList="nodownload nofullscreen noremoteplayback"
-            aria-label="Vídeo: Mensagem de Pai Benedito">
-            Seu navegador não suporta reprodução de vídeo.
-          </video>
-          <!-- Custom overlay — only play/pause, no native controls -->
-          <div class="vpl-overlay" id="vplOverlay" role="button" aria-label="Reproduzir / Pausar">
-            <button class="vpl-btn" id="vplBtn" aria-label="Reproduzir">
-              <!-- Play icon -->
-              <svg class="vpl-play" viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              <!-- Pause icon -->
-              <svg class="vpl-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-            </button>
+      <header class="header">
+        <div class="deco-line"><span class="deco-sym">✦ &nbsp; ✦ &nbsp; ✦</span></div>
+        <h1 class="headline">
+          A mensagem de Pai Benedito sobre <em>o seu bloqueio financeiro</em>
+        </h1>
+      </header>
+
+      <section class="video-section" aria-label="Vídeo da mensagem">
+        <div class="video-frame">
+          <div class="video-inner" id="videoInner">
+            <video
+              id="vsl-player"
+              src="vsl.mp4"
+              preload="auto"
+              autoplay
+              muted
+              playsinline
+              disablePictureInPicture
+              controlsList="nodownload nofullscreen noremoteplayback"
+              aria-label="Vídeo: Mensagem de Pai Benedito">
+              Seu navegador não suporta reprodução de vídeo.
+            </video>
+
+            <!-- Overlay: apenas ativar som (sem pause) -->
+            <div class="sound-overlay" id="soundOverlay">
+              <button class="sound-btn" id="soundBtn" aria-label="Ativar som do vídeo">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                  <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>
+                </svg>
+                Toque para ativar o som
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <p class="video-notice">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-        Vídeo privado — não compartilhe este link
-      </p>
-    </section>
+      </section>
 
-    <!-- OFFER SECTION — locked until 10 min watched -->
+    </div>
+  </div><!-- /.vsl-screen -->
+
+  <!-- ══════════ OFERTA — revelada após 10 min ══════════ -->
+  <div class="offer-page">
     <div id="offer-section">
 
-    <!-- Separator -->
-    <div class="section-sep">A solução que Pai Benedito preparou para você</div>
+      <!-- "Isto não é uma compra" -->
+      <div class="offer-intro">
+        <h2 class="offer-intro-title">
+          Isto não é<br /><em>uma compra.</em>
+        </h2>
+        <p class="offer-intro-body">
+          É a resposta espiritual que ressoou em você enquanto assistia ao vídeo.
+          Uma força superior preparou este momento — e agora depende da sua decisão.
+        </p>
 
-    <!-- Offer headline -->
-    <div class="offer-head">
-      <h2>Agora que você entendeu o bloqueio,<br /><em>é hora de quebrá-lo de vez.</em></h2>
-      <p>
-        Pai Benedito preparou um ritual completo de 7 dias — com orações em áudio, afirmações
-        e ações financeiras concretas — para desbloqueiar sua prosperidade de dentro para fora.
-      </p>
-    </div>
-
-    <!-- Product card -->
-    <div class="product-card">
-      <div class="prod-head">
-        <span class="prod-badge">Oferta exclusiva</span>
-        <h2 class="prod-name">Ritual dos 7 Dias</h2>
-        <p class="prod-sub">Desbloqueio Financeiro com Pai Benedito</p>
-      </div>
-
-      <div class="includes">
-        <p class="includes-label">O que você recebe</p>
-
-        <div class="item">
-          <div class="item-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="item-text">
-            <strong>Guia em PDF — 7 dias completos</strong>
-            <span>Ritual diário com intenção, preparo, etapas, oração e afirmação. Design premium para imprimir ou ler no celular.</span>
-          </div>
+        <div class="offer-quote">
+          <p>"Plante esta semente em solo fértil; quando florescer, suas bênçãos iluminarão outros caminhos."</p>
+          <cite>— Pai Benedito</cite>
         </div>
 
-        <div class="item">
-          <div class="item-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="item-text">
-            <strong>7 Orações em Áudio — voz de Pai Benedito</strong>
-            <span>Uma oração por dia, narrada para você ouvir durante o ritual. Experiência imersiva e poderosa.</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="item-text">
-            <strong>7 Ações Financeiras Concretas</strong>
-            <span>Uma ação prática por dia para transformar a energia espiritual em resultado real no mundo material.</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="item-text">
-            <strong>Acesso imediato após a confirmação</strong>
-            <span>Todos os materiais entregues direto no seu WhatsApp em até 5 minutos.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bonus section -->
-      <div class="bonus-header">
-        <span class="bonus-label">Bônus exclusivos inclusos</span>
-        <span class="bonus-badge">Grátis</span>
-      </div>
-      <div class="bonus-items">
-
-        <div class="bonus-item">
-          <div class="bonus-num">1</div>
-          <div class="bonus-text">
-            <strong>Círculo de Luz no WhatsApp</strong>
-            <span>Participe de um grupo seleto com mensagens diárias de orientação espiritual e mantras poderosos. A energia coletiva amplifica suas vibrações e cria um campo de proteção e manifestação acelerada.</span>
-            <div class="bonus-tags"><span class="bonus-tag">Comunidade</span><span class="bonus-tag">Proteção</span></div>
-          </div>
-        </div>
-
-        <div class="bonus-item">
-          <div class="bonus-num">2</div>
-          <div class="bonus-text">
-            <strong>Tarot dos Anjos Personalizado</strong>
-            <span>Receba uma leitura exclusiva do Tarot dos Anjos que revela seu roteiro divino para os próximos passos. Identifica bloqueios ocultos e ilumina o caminho preparado especialmente para você.</span>
-            <div class="bonus-tags"><span class="bonus-tag">Orientação</span><span class="bonus-tag">Desbloqueio</span></div>
-          </div>
-        </div>
-
-        <div class="bonus-item">
-          <div class="bonus-num">3</div>
-          <div class="bonus-text">
-            <strong>Áudio de Meditação 432 Hz</strong>
-            <span>Transforme sua energia em apenas 7 minutos com esta meditação guiada na frequência angelical de 432 Hz — para ouvir durante o ritual e amplificar sua conexão espiritual.</span>
-            <div class="bonus-tags"><span class="bonus-tag">Frequência</span><span class="bonus-tag">Harmonia</span></div>
-          </div>
-        </div>
-
-        <div class="bonus-item">
-          <div class="bonus-num">4</div>
-          <div class="bonus-text">
-            <strong>As Orações Curadoras do Monge</strong>
-            <span>Coleção de 7 orações ancestrais cuidadosamente selecionadas para criar um campo de proteção espiritual e restaurar sua conexão com o divino.</span>
-            <div class="bonus-tags"><span class="bonus-tag">Proteção</span><span class="bonus-tag">Cura</span></div>
-          </div>
-        </div>
-
-        <div class="bonus-item">
-          <div class="bonus-num">5</div>
-          <div class="bonus-text">
-            <strong>Bônus Secreto Premium</strong>
-            <span>Um presente espiritual extraordinário que Pai Benedito mantém em segredo até o momento certo — criado para amplificar sua capacidade de manifestação e abrir portais de abundância.</span>
-            <div class="bonus-tags"><span class="bonus-tag">Exclusivo</span><span class="bonus-tag">Transformador</span></div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Price -->
-      <div class="price-box">
-        <p class="price-de">De R$ 97,00</p>
-        <p class="price-val"><sup>R$</sup> 37</p>
-        <p class="price-note">pagamento único · acesso imediato</p>
-      </div>
-
-      <!-- Order bump -->
-      <label class="bump" for="bump-cb">
-        <input type="checkbox" class="bump-cb" id="bump-cb" />
-        <div class="bump-label">
-          <strong>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><polyline points="20 6 9 17 4 12"/></svg>
-            Sim! Adicionar o Banho de Prosperidade por apenas R$ 17
-          </strong>
-          <span>PDF completo com o ritual de banho de atração financeira. Ingredientes, preparo passo a passo, oração e afirmação. Complemento perfeito para os 7 dias.</span>
-        </div>
-      </label>
-
-      <!-- CTA -->
-      <div class="cta-zone">
-        <a href="SEU-LINK-DE-CHECKOUT-AQUI" class="btn-buy" id="btnPrincipal">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          QUERO QUEBRAR MEU BLOQUEIO AGORA
-        </a>
-        <div class="trust-row">
-          <span class="trust-item">
-            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-            Pagamento seguro
-          </span>
-          <span class="trust-item">
-            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            7 dias de garantia
-          </span>
-          <span class="trust-item">
-            <svg viewBox="0 0 24 24" stroke-linecap="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-            Entrega no WhatsApp
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Guarantee -->
-    <div class="guarantee">
-      <div class="guarantee-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      </div>
-      <div>
-        <h3>Garantia incondicional de 7 dias</h3>
-        <p>
-          Se em 7 dias você seguir o ritual e não sentir nenhuma transformação energética,
-          devolvemos cada centavo. Sem burocracia, sem perguntas. Você não perde nada — só tem a ganhar.
+        <p class="offer-tagline">Portanto, não há preço fixo.</p>
+        <p class="offer-subtext">
+          Você decide o valor da sua oferta, como um gesto simbólico de fé que mantém esta missão viva
+          e permite que mais vidas sejam tocadas pela luz de Pai Benedito.
         </p>
       </div>
-    </div>
 
-    <!-- Testimonials -->
-    <h2 class="section-title">Pessoas que já quebraram o bloqueio</h2>
-    <p class="section-sub">Experiências reais de quem realizou o Ritual dos 7 Dias</p>
+      <p class="tiers-title">Você colhe o que planta</p>
 
-    <div class="depos">
+      <div class="tiers">
 
-      <div class="depo">
-        <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
-        <p class="depo-quote">No 3º dia já senti algo diferente dentro de mim. No 7º dia recebi uma proposta de emprego que não esperava. Fiz com fé e funcionou de verdade.</p>
-        <div class="depo-author">
-          <div class="depo-avatar" aria-hidden="true">M</div>
-          <div class="depo-info">
-            <strong>Maria das Graças S.</strong>
-            <span>São Paulo, SP</span>
+        <!-- ── TIER 1: Colheita Completa — R$97 ── -->
+        <a href="SEU-LINK-TIER-97" class="tier tier-top" id="tierTop">
+          <div class="tier-header">Prepare uma Colheita Completa</div>
+          <div class="tier-body">
+            <ul class="tier-items">
+              <li>Ritual dos 7 Dias (PDF + 7 áudios)</li>
+              <li>Banho de Prosperidade (PDF)</li>
+              <li>Círculo de Luz no WhatsApp</li>
+              <li>Tarot dos Anjos Personalizado</li>
+              <li>Áudio de Meditação 432 Hz</li>
+              <li>As Orações Curadoras do Monge</li>
+              <li>Bônus Secreto Premium</li>
+            </ul>
+            <div class="tier-price">
+              <p class="tier-installment">12x de <strong>R$&nbsp;9,50</strong></p>
+              <p class="tier-val"><sup>R$</sup>97</p>
+              <p class="tier-avista">ou R$ 97 à vista</p>
+            </div>
           </div>
+          <div class="tier-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            PLANTAR MINHA SEMENTE
+          </div>
+        </a>
+
+        <!-- ── TIER 2: Duplique sua Fé — R$67 ── -->
+        <a href="SEU-LINK-TIER-67" class="tier tier-mid" id="tierMid">
+          <div class="tier-header">Duplique sua Fé</div>
+          <div class="tier-body">
+            <ul class="tier-items">
+              <li>Ritual dos 7 Dias (PDF + 7 áudios)</li>
+              <li>Banho de Prosperidade (PDF)</li>
+              <li>Círculo de Luz no WhatsApp</li>
+              <li>Tarot dos Anjos Personalizado</li>
+            </ul>
+            <div class="tier-price">
+              <p class="tier-installment">12x de <strong>R$&nbsp;6,40</strong></p>
+              <p class="tier-val"><sup>R$</sup>67</p>
+              <p class="tier-avista">ou R$ 67 à vista</p>
+            </div>
+          </div>
+          <div class="tier-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            PLANTAR MINHA SEMENTE
+          </div>
+        </a>
+
+        <!-- ── TIER 3: Primeira semente — R$37 ── -->
+        <a href="SEU-LINK-TIER-37" class="tier tier-entry" id="tierEntry">
+          <div class="tier-header">Plante a sua primeira semente</div>
+          <div class="tier-body">
+            <ul class="tier-items">
+              <li>Ritual dos 7 Dias (PDF + 7 áudios)</li>
+              <li>7 Ações Financeiras Concretas</li>
+              <li>Entrega imediata no WhatsApp</li>
+            </ul>
+            <div class="tier-price">
+              <p class="tier-installment">&nbsp;</p>
+              <p class="tier-val"><sup>R$</sup>37</p>
+              <p class="tier-avista">pagamento único</p>
+            </div>
+          </div>
+          <div class="tier-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            PLANTAR MINHA SEMENTE
+          </div>
+        </a>
+
+      </div>
+
+      <div class="offer-sep">Sua proteção</div>
+
+      <!-- Garantia -->
+      <div class="guarantee">
+        <div class="guarantee-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <h3>Garantia incondicional de 7 dias</h3>
+          <p>
+            Se em 7 dias você seguir o ritual e não sentir nenhuma transformação energética,
+            devolvemos cada centavo. Sem burocracia, sem perguntas. Você não tem nada a perder.
+          </p>
         </div>
       </div>
 
-      <div class="depo">
-        <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
-        <p class="depo-quote">Era cética mas resolvi tentar. O áudio da oração me emocionou demais. Quitei uma dívida que tinha há 2 anos logo depois de terminar os 7 dias.</p>
-        <div class="depo-author">
-          <div class="depo-avatar" aria-hidden="true">R</div>
-          <div class="depo-info">
-            <strong>Rosangela M.</strong>
-            <span>Belo Horizonte, MG</span>
+      <!-- Depoimentos -->
+      <h2 class="section-title">Pessoas que já quebraram o bloqueio</h2>
+      <p class="section-sub">Experiências reais de quem realizou o Ritual dos 7 Dias</p>
+
+      <div class="depos">
+        <div class="depo">
+          <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
+          <p class="depo-quote">No 3º dia já senti algo diferente. No 7º dia recebi uma proposta de emprego que não esperava. Fiz com fé e funcionou de verdade.</p>
+          <div class="depo-author">
+            <div class="depo-avatar" aria-hidden="true">M</div>
+            <div class="depo-info"><strong>Maria das Graças S.</strong><span>São Paulo, SP</span></div>
+          </div>
+        </div>
+        <div class="depo">
+          <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
+          <p class="depo-quote">Era cética mas resolvi tentar. O áudio me emocionou demais. Quitei uma dívida que tinha há 2 anos logo após os 7 dias.</p>
+          <div class="depo-author">
+            <div class="depo-avatar" aria-hidden="true">R</div>
+            <div class="depo-info"><strong>Rosangela M.</strong><span>Belo Horizonte, MG</span></div>
+          </div>
+        </div>
+        <div class="depo">
+          <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
+          <p class="depo-quote">O ritual do Dia 3 foi o que mais me transformou. Chorei muito, soltei coisas antigas. Minha vida financeira começou a mudar.</p>
+          <div class="depo-author">
+            <div class="depo-avatar" aria-hidden="true">C</div>
+            <div class="depo-info"><strong>Cleide A.</strong><span>Recife, PE</span></div>
+          </div>
+        </div>
+        <div class="depo">
+          <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
+          <p class="depo-quote">Realizei todos os 7 dias e no final consegui vender o carro parado há meses. Axé, Pai Benedito.</p>
+          <div class="depo-author">
+            <div class="depo-avatar" aria-hidden="true">F</div>
+            <div class="depo-info"><strong>Fatima R.</strong><span>Fortaleza, CE</span></div>
           </div>
         </div>
       </div>
-
-      <div class="depo">
-        <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
-        <p class="depo-quote">O ritual do Dia 3 foi o que mais me transformou. Chorei muito, soltei coisas antigas. Minha vida financeira começou a mudar a partir dali.</p>
-        <div class="depo-author">
-          <div class="depo-avatar" aria-hidden="true">C</div>
-          <div class="depo-info">
-            <strong>Cleide A.</strong>
-            <span>Recife, PE</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="depo">
-        <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
-        <p class="depo-quote">Nunca tinha feito nada assim. Realizei todos os 7 dias e no final consegui vender o carro parado há meses. Axé, Pai Benedito.</p>
-        <div class="depo-author">
-          <div class="depo-avatar" aria-hidden="true">F</div>
-          <div class="depo-info">
-            <strong>Fatima R.</strong>
-            <span>Fortaleza, CE</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Final CTA -->
-    <div class="final-cta">
-      <h2>Pronta(o) para quebrar o bloqueio<br /><em>de uma vez por todas?</em></h2>
-      <p>Acesso imediato · 7 dias de garantia · R$ 37 pagamento único</p>
-      <a href="SEU-LINK-DE-CHECKOUT-AQUI" class="btn-buy" id="btnFinal">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        COMEÇAR MEU RITUAL AGORA
-      </a>
-      <div class="trust-row" style="margin-top:14px">
-        <span class="trust-item">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-          Pagamento seguro
-        </span>
-        <span class="trust-item">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-          Entrega no WhatsApp em 5 min
-        </span>
-      </div>
-    </div>
 
     </div><!-- /#offer-section -->
 
-    <!-- Footer -->
     <footer class="footer">
       Os resultados apresentados são experiências individuais e podem variar.<br />
       Este site não é afiliado ao Facebook ou Instagram.<br />
       © 2026 Pai Benedito — Todos os direitos reservados.
     </footer>
 
-  </div>
+  </div><!-- /.offer-page -->
 
-  <!-- Mobile sticky CTA -->
+  <!-- Mobile sticky CTA (aparece com a oferta) -->
   <div class="sticky-cta" aria-hidden="true">
-    <a href="SEU-LINK-DE-CHECKOUT-AQUI" class="sticky-btn" id="btnSticky" tabindex="-1">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Quero meu ritual — R$ 37
+    <a href="SEU-LINK-TIER-37" class="sticky-btn" id="btnSticky" tabindex="-1">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Plantar minha semente — a partir de R$ 37
     </a>
   </div>
 
   <script>
-    /* ── Custom VSL Player ── */
-    const video      = document.getElementById('vsl-player');
-    const videoInner = document.getElementById('videoInner');
-    const overlay    = document.getElementById('vplOverlay');
-    const vplBtn     = document.getElementById('vplBtn');
+    /* ── Autoplay + Som ── */
+    const video        = document.getElementById('vsl-player');
+    const soundOverlay = document.getElementById('soundOverlay');
+    const soundBtn     = document.getElementById('soundBtn');
 
-    function togglePlay() {
-      if (video.paused || video.ended) {
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-      }
-    }
+    // Autoplay mutado (compatível com todos os browsers)
+    video.play().catch(() => {});
 
-    overlay.addEventListener('click', togglePlay);
-    vplBtn.setAttribute('aria-label', 'Reproduzir');
-
-    video.addEventListener('play', () => {
-      videoInner.classList.add('playing');
-      vplBtn.setAttribute('aria-label', 'Pausar');
-    });
-    video.addEventListener('pause', () => {
-      videoInner.classList.remove('playing');
-      vplBtn.setAttribute('aria-label', 'Reproduzir');
-    });
-    video.addEventListener('ended', () => {
-      videoInner.classList.remove('playing');
-      vplBtn.setAttribute('aria-label', 'Reproduzir');
+    // Ativar som ao clicar no botão
+    soundBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      video.muted = false;
+      soundOverlay.classList.add('off');
     });
 
-    // Prevent context-menu download on video
+    // Bloquear barra de espaço (evita pausa acidental)
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space') e.preventDefault();
+    });
+
+    // Bloquear menu de contexto (impede download)
     video.addEventListener('contextmenu', e => e.preventDefault());
 
-    /* ── Offer lock + scroll block — reveal after 10 min (600s) ── */
+    /* ── Reveal da oferta após 10 min ── */
     const offerSection = document.getElementById('offer-section');
     const stickyCta    = document.querySelector('.sticky-cta');
-    let offerRevealed  = false;
-    let scrollLimit    = 9999;
-
-    // Compute max allowed scroll (just below the video notice)
-    function updateScrollLimit() {
-      const notice = document.querySelector('.video-notice');
-      if (notice) {
-        scrollLimit = notice.getBoundingClientRect().bottom + window.scrollY + 24;
-      }
-    }
-    window.addEventListener('load',   updateScrollLimit);
-    window.addEventListener('resize', updateScrollLimit);
-    setTimeout(updateScrollLimit, 200);
-
-    // Enforce scroll limit while offer is locked
-    function enforceScrollLimit() {
-      if (!offerRevealed && window.scrollY > scrollLimit) {
-        window.scrollTo({ top: scrollLimit, behavior: 'instant' });
-      }
-    }
-    window.addEventListener('scroll', enforceScrollLimit, { passive: false });
+    let   offerRevealed = false;
 
     function revealOffer() {
       if (offerRevealed) return;
       offerRevealed = true;
+      document.body.classList.add('unlocked');
       offerSection.classList.add('reveal');
       if (stickyCta) stickyCta.classList.add('offer-ready');
-      // Scroll to offer section smoothly
       setTimeout(() => {
-        offerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 300);
+        document.querySelector('.offer-page').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 350);
     }
 
     video.addEventListener('timeupdate', () => {
       if (!offerRevealed && video.currentTime >= 600) revealOffer();
     });
 
-    // DEV HELPER: uncomment to reveal immediately for testing
-    // revealOffer();
-
-    /* ── Order bump — swap checkout link ── */
-    const cb       = document.getElementById('bump-cb');
-    const URL_BASE = 'SEU-LINK-DE-CHECKOUT-AQUI';
-    const URL_BUMP = 'SEU-LINK-COM-ORDER-BUMP-AQUI';
-    const btnIds   = ['btnPrincipal', 'btnFinal', 'btnSticky'];
-
-    cb.addEventListener('change', () => {
-      btnIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.href = cb.checked ? URL_BUMP : URL_BASE;
-      });
-    });
-
-    /* ── Hide sticky CTA when main CTA is in viewport ── */
-    const mainCta = document.querySelector('.cta-zone');
-    if (mainCta && stickyCta) {
-      const io = new IntersectionObserver(entries => {
-        if (!offerRevealed) return;
-        stickyCta.style.display = entries[0].isIntersecting ? 'none' : '';
-      }, { threshold: 0.5 });
-      io.observe(mainCta);
-    }
+    // ▼ DEV: descomente para testar a oferta sem esperar 10 min
+    // setTimeout(revealOffer, 3000);
   </script>
 
 </body>
