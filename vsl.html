@@ -448,12 +448,14 @@
     }
     .depo-author { display: flex; align-items: center; gap: 9px; }
     .depo-avatar {
-      width: 32px; height: 32px; border-radius: 50%;
+      width: 38px; height: 38px; border-radius: 50%;
       background: linear-gradient(135deg, var(--gold-dk), var(--gold));
       display: flex; align-items: center; justify-content: center;
       font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700;
       color: var(--black); flex-shrink: 0;
+      overflow: hidden; border: 2px solid var(--gold-dk);
     }
+    .depo-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
     .depo-info strong { display: block; font-size: 12px; color: var(--white); }
     .depo-info span { font-size: 11px; color: var(--dim); }
 
@@ -664,7 +666,7 @@
           <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
           <p class="depo-quote">No 3º dia já senti algo diferente. No 7º dia recebi uma proposta de emprego que não esperava. Fiz com fé e funcionou de verdade.</p>
           <div class="depo-author">
-            <div class="depo-avatar" aria-hidden="true">M</div>
+            <div class="depo-avatar"><img src="./depoimentos/maria.png" alt="Maria das Graças S."></div>
             <div class="depo-info"><strong>Maria das Graças S.</strong><span>São Paulo, SP</span></div>
           </div>
         </div>
@@ -672,7 +674,7 @@
           <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
           <p class="depo-quote">Era cética mas resolvi tentar. O áudio me emocionou demais. Quitei uma dívida que tinha há 2 anos logo após os 7 dias.</p>
           <div class="depo-author">
-            <div class="depo-avatar" aria-hidden="true">R</div>
+            <div class="depo-avatar"><img src="./depoimentos/rosangela.png" alt="Rosangela M."></div>
             <div class="depo-info"><strong>Rosangela M.</strong><span>Belo Horizonte, MG</span></div>
           </div>
         </div>
@@ -680,7 +682,7 @@
           <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
           <p class="depo-quote">O ritual do Dia 3 foi o que mais me transformou. Chorei muito, soltei coisas antigas. Minha vida financeira começou a mudar.</p>
           <div class="depo-author">
-            <div class="depo-avatar" aria-hidden="true">C</div>
+            <div class="depo-avatar"><img src="./depoimentos/cleide.png" alt="Cleide A."></div>
             <div class="depo-info"><strong>Cleide A.</strong><span>Recife, PE</span></div>
           </div>
         </div>
@@ -688,7 +690,7 @@
           <div class="depo-stars" aria-label="5 estrelas">★★★★★</div>
           <p class="depo-quote">Realizei todos os 7 dias e no final consegui vender o carro parado há meses. Axé, Pai Benedito.</p>
           <div class="depo-author">
-            <div class="depo-avatar" aria-hidden="true">F</div>
+            <div class="depo-avatar"><img src="./depoimentos/fatima.png" alt="Fatima R."></div>
             <div class="depo-info"><strong>Fatima R.</strong><span>Fortaleza, CE</span></div>
           </div>
         </div>
