@@ -205,20 +205,49 @@
       50%      { opacity: .45; }
     }
 
+    /* ── Título cartas ── */
+    .cards-titulo {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(18px, 4vw, 28px);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    /* ── Pill urgência ── */
+    .sel-counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(201,168,76,.1);
+      border: 1.5px solid var(--gold);
+      border-radius: 100px;
+      padding: 8px 22px;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(11px, 2.2vw, 14px);
+      color: var(--gold);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      animation: ring 2s ease-in-out infinite;
+    }
+    .sel-counter strong { color: var(--gold-lt); font-weight: 900; }
+
     /* ── Card grid ── */
     .cards-row {
       display: flex;
-      gap: clamp(14px, 3vw, 28px);
+      flex-wrap: wrap;
+      gap: clamp(8px, 2vw, 16px);
       justify-content: center;
       margin-bottom: 44px;
-      flex-wrap: nowrap;
     }
 
-    .card-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .card-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
     .card-wrap {
-      width: clamp(100px, 26vw, 168px);
-      height: clamp(165px, 43vw, 276px);
+      width: clamp(76px, 16vw, 118px);
+      height: clamp(126px, 27vw, 196px);
       perspective: 1200px;
       cursor: pointer;
       flex-shrink: 0;
@@ -244,47 +273,24 @@
       -webkit-backface-visibility: hidden;
     }
 
-    /* Back (visible before flip) */
+    /* Back (visible before flip) — estilo baralho ornamental */
     .card-back {
-      background: linear-gradient(155deg, #14141e 0%, #1a1a2a 100%);
-      border: 1.5px solid var(--gold-dk);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.7), inset 0 1px 0 rgba(201,168,76,.12);
-      transition: box-shadow .3s ease;
-    }
-    .card-back::before {
-      content: '';
-      position: absolute;
-      inset: 7px;
-      border: 1px solid rgba(201,168,76,.18);
-      border-radius: 8px;
-    }
-    .card-back::after {
-      content: '';
-      position: absolute;
-      inset: 11px;
-      border: 1px solid rgba(201,168,76,.08);
-      border-radius: 5px;
+      background: linear-gradient(145deg, #f5e8cc, #ead9b0, #f5e8cc);
+      border: none;
+      padding: 0;
+      box-shadow: 0 10px 32px rgba(0,0,0,.65), 0 2px 6px rgba(0,0,0,.4);
+      transition: transform .15s ease, box-shadow .3s ease;
+      overflow: hidden;
     }
     .card-wrap:hover .card-back {
-      box-shadow: 0 16px 50px rgba(0,0,0,.8), 0 0 20px rgba(201,168,76,.15), inset 0 1px 0 rgba(201,168,76,.15);
+      box-shadow: 0 16px 44px rgba(0,0,0,.75), 0 0 16px rgba(201,168,76,.25);
+      transform: translateY(-4px) scale(1.02);
     }
-    .card-back-sym {
-      width: clamp(28px, 7vw, 44px);
-      height: clamp(28px, 7vw, 44px);
-      opacity: .6;
+    .card-wrap.selected .card-back {
+      box-shadow: 0 0 0 3px var(--gold), 0 10px 32px rgba(201,168,76,.4);
     }
-    .card-back-label {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(8px, 1.8vw, 10px);
-      color: var(--gold-dk);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
+    /* SVG ocupa 100% do card-back */
+    .card-back svg { width: 100%; height: 100%; display: block; }
 
     /* Front (revealed card image) */
     .card-front {
@@ -497,57 +503,91 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
     </p>
 
-    <!-- Cards -->
-    <div class="cards-row" role="group" aria-label="Três cartas sagradas para revelar">
+    <!-- SVG ornamental reutilizável (baralho vermelho) -->
+    <svg style="display:none" aria-hidden="true">
+      <symbol id="card-orn" viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
+        <!-- fundo creme já vem do CSS; este SVG desenha o padrão vermelho -->
+        <!-- Corpo vermelho -->
+        <rect x="7" y="7" width="86" height="146" fill="#c41818" rx="3"/>
+        <!-- Textura pontilhada -->
+        <rect x="7" y="7" width="86" height="146" rx="3"
+          fill="url(#dots)"/>
+        <defs>
+          <pattern id="dots" x="0" y="0" width="5" height="5" patternUnits="userSpaceOnUse">
+            <circle cx="2.5" cy="2.5" r=".7" fill="rgba(255,255,255,.07)"/>
+          </pattern>
+        </defs>
+        <!-- Borda externa -->
+        <rect x="9" y="9" width="82" height="142" fill="none" stroke="rgba(255,255,255,.45)" stroke-width=".9" rx="2"/>
+        <!-- Borda interna fina -->
+        <rect x="12" y="12" width="76" height="136" fill="none" stroke="rgba(255,255,255,.2)" stroke-width=".4" rx="1"/>
+        <!-- Cantos ornamentais -->
+        <path d="M9,22 Q9,9 22,9" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.1"/>
+        <path d="M91,22 Q91,9 78,9" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.1"/>
+        <path d="M9,138 Q9,151 22,151" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.1"/>
+        <path d="M91,138 Q91,151 78,151" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.1"/>
+        <!-- Curva interna cantos -->
+        <path d="M9,28 Q9,9 28,9" fill="none" stroke="rgba(255,255,255,.2)" stroke-width=".5"/>
+        <path d="M91,28 Q91,9 72,9" fill="none" stroke="rgba(255,255,255,.2)" stroke-width=".5"/>
+        <path d="M9,132 Q9,151 28,151" fill="none" stroke="rgba(255,255,255,.2)" stroke-width=".5"/>
+        <path d="M91,132 Q91,151 72,151" fill="none" stroke="rgba(255,255,255,.2)" stroke-width=".5"/>
+        <!-- Medalhão central -->
+        <g transform="translate(50,80)">
+          <!-- Anel externo -->
+          <circle r="30" fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".9"/>
+          <!-- 8 pétalas -->
+          <ellipse rx="5" ry="13" cy="-17" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7" transform="rotate(0)"/>
+          <ellipse rx="5" ry="13" cy="-17" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7" transform="rotate(45)"/>
+          <ellipse rx="5" ry="13" cy="-17" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7" transform="rotate(90)"/>
+          <ellipse rx="5" ry="13" cy="-17" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7" transform="rotate(135)"/>
+          <ellipse rx="5" ry="13" cy="-17" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7" transform="rotate(180)"/>
+          <ellipse rx="5" ry="13" cy="-17" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7" transform="rotate(225)"/>
+          <ellipse rx="5" ry="13" cy="-17" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7" transform="rotate(270)"/>
+          <ellipse rx="5" ry="13" cy="-17" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7" transform="rotate(315)"/>
+          <!-- Anéis internos -->
+          <circle r="16" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.4)" stroke-width=".8"/>
+          <circle r="9"  fill="none"                  stroke="rgba(255,255,255,.35)" stroke-width=".6"/>
+          <circle r="4"  fill="rgba(255,255,255,.18)"  stroke="rgba(255,255,255,.45)" stroke-width=".5"/>
+          <circle r="1.5" fill="rgba(255,255,255,.7)"/>
+        </g>
+        <!-- Ornamentos laterais -->
+        <circle cx="50" cy="25"  r="4" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7"/>
+        <circle cx="50" cy="135" r="4" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7"/>
+        <circle cx="19" cy="80"  r="4" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7"/>
+        <circle cx="81" cy="80"  r="4" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.38)" stroke-width=".7"/>
+        <!-- Linhas conectoras -->
+        <line x1="50" y1="29"  x2="50" y2="49"  stroke="rgba(255,255,255,.18)" stroke-width=".5"/>
+        <line x1="50" y1="111" x2="50" y2="131" stroke="rgba(255,255,255,.18)" stroke-width=".5"/>
+        <line x1="23" y1="80"  x2="20" y2="80"  stroke="rgba(255,255,255,.18)" stroke-width=".5"/>
+        <line x1="77" y1="80"  x2="80" y2="80"  stroke="rgba(255,255,255,.18)" stroke-width=".5"/>
+      </symbol>
+    </svg>
 
-      <div class="card-col">
-        <div class="card-wrap" id="c1" role="button" aria-label="Virar primeira carta" tabindex="0" onclick="flip(1)" onkeydown="if(event.key==='Enter'||event.key===' ')flip(1)">
-          <div class="card-inner">
-            <div class="card-front">
-              <img src="cartas/carta1.png" alt="Primeira carta revelada" loading="lazy" />
-            </div>
-            <div class="card-back" aria-hidden="true">
-              <!-- Moon symbol -->
-              <svg class="card-back-sym" viewBox="0 0 44 44" fill="none" stroke="rgba(201,168,76,.6)" stroke-width="1.5" stroke-linecap="round"><circle cx="22" cy="22" r="18"/><path d="M22 8 C14 8 8 14.5 8 22 C8 29.5 14 36 22 36 C17 36 13 29.5 13 22 C13 14.5 17 8 22 8Z" fill="rgba(201,168,76,.12)"/></svg>
-              <span class="card-back-label">Carta I</span>
-            </div>
-          </div>
-        </div>
-        <span class="card-label">1ª carta</span>
-      </div>
+    <!-- Título -->
+    <h2 class="cards-titulo">Vire 3 cartas antes que seja tarde demais</h2>
 
-      <div class="card-col">
-        <div class="card-wrap" id="c2" role="button" aria-label="Virar segunda carta" tabindex="0" onclick="flip(2)" onkeydown="if(event.key==='Enter'||event.key===' ')flip(2)">
-          <div class="card-inner">
-            <div class="card-front">
-              <img src="cartas/carta2.png" alt="Segunda carta revelada" loading="lazy" />
-            </div>
-            <div class="card-back" aria-hidden="true">
-              <!-- Sun symbol -->
-              <svg class="card-back-sym" viewBox="0 0 44 44" fill="none" stroke="rgba(201,168,76,.6)" stroke-width="1.5" stroke-linecap="round"><circle cx="22" cy="22" r="8"/><line x1="22" y1="4" x2="22" y2="10"/><line x1="22" y1="34" x2="22" y2="40"/><line x1="4" y1="22" x2="10" y2="22"/><line x1="34" y1="22" x2="40" y2="22"/><line x1="9" y1="9" x2="13" y2="13"/><line x1="31" y1="31" x2="35" y2="35"/><line x1="35" y1="9" x2="31" y2="13"/><line x1="13" y1="31" x2="9" y2="35"/></svg>
-              <span class="card-back-label">Carta II</span>
-            </div>
-          </div>
-        </div>
-        <span class="card-label">2ª carta</span>
-      </div>
+    <!-- Pill urgência -->
+    <p class="sel-counter" id="selCounter" aria-live="polite" role="status">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      URGENTE: Faltam <strong id="selNum">3</strong> cartas
+    </p>
 
-      <div class="card-col">
-        <div class="card-wrap" id="c3" role="button" aria-label="Virar terceira carta" tabindex="0" onclick="flip(3)" onkeydown="if(event.key==='Enter'||event.key===' ')flip(3)">
-          <div class="card-inner">
-            <div class="card-front">
-              <img src="cartas/carta3.png" alt="Terceira carta revelada" loading="lazy" />
-            </div>
-            <div class="card-back" aria-hidden="true">
-              <!-- Star symbol -->
-              <svg class="card-back-sym" viewBox="0 0 44 44" fill="none" stroke="rgba(201,168,76,.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22,4 27,16 40,16 30,24 34,38 22,30 10,38 14,24 4,16 17,16"/></svg>
-              <span class="card-back-label">Carta III</span>
-            </div>
-          </div>
-        </div>
-        <span class="card-label">3ª carta</span>
-      </div>
-
+    <!-- 7 cartas — usuário escolhe 3, sempre revela carta1/2/3 pela ordem de clique -->
+    <div class="cards-row" role="group" aria-label="Escolha 3 cartas sagradas" id="cardsGrid">
+      <!-- Carta 1 -->
+      <div class="card-col"><div class="card-wrap" data-id="1" role="button" aria-label="Carta" tabindex="0"><div class="card-inner"><div class="card-front"><img src="" alt="Carta revelada" loading="lazy"/></div><div class="card-back" aria-hidden="true"><svg><use href="#card-orn"/></svg></div></div></div></div>
+      <!-- Carta 2 -->
+      <div class="card-col"><div class="card-wrap" data-id="2" role="button" aria-label="Carta" tabindex="0"><div class="card-inner"><div class="card-front"><img src="" alt="Carta revelada" loading="lazy"/></div><div class="card-back" aria-hidden="true"><svg><use href="#card-orn"/></svg></div></div></div></div>
+      <!-- Carta 3 -->
+      <div class="card-col"><div class="card-wrap" data-id="3" role="button" aria-label="Carta" tabindex="0"><div class="card-inner"><div class="card-front"><img src="" alt="Carta revelada" loading="lazy"/></div><div class="card-back" aria-hidden="true"><svg><use href="#card-orn"/></svg></div></div></div></div>
+      <!-- Carta 4 -->
+      <div class="card-col"><div class="card-wrap" data-id="4" role="button" aria-label="Carta" tabindex="0"><div class="card-inner"><div class="card-front"><img src="" alt="Carta revelada" loading="lazy"/></div><div class="card-back" aria-hidden="true"><svg><use href="#card-orn"/></svg></div></div></div></div>
+      <!-- Carta 5 -->
+      <div class="card-col"><div class="card-wrap" data-id="5" role="button" aria-label="Carta" tabindex="0"><div class="card-inner"><div class="card-front"><img src="" alt="Carta revelada" loading="lazy"/></div><div class="card-back" aria-hidden="true"><svg><use href="#card-orn"/></svg></div></div></div></div>
+      <!-- Carta 6 -->
+      <div class="card-col"><div class="card-wrap" data-id="6" role="button" aria-label="Carta" tabindex="0"><div class="card-inner"><div class="card-front"><img src="" alt="Carta revelada" loading="lazy"/></div><div class="card-back" aria-hidden="true"><svg><use href="#card-orn"/></svg></div></div></div></div>
+      <!-- Carta 7 -->
+      <div class="card-col"><div class="card-wrap" data-id="7" role="button" aria-label="Carta" tabindex="0"><div class="card-inner"><div class="card-front"><img src="" alt="Carta revelada" loading="lazy"/></div><div class="card-back" aria-hidden="true"><svg><use href="#card-orn"/></svg></div></div></div></div>
     </div>
 
     <!-- Revelation (hidden until all 3 flipped) -->
@@ -588,29 +628,63 @@
   </main>
 
   <script>
-    const done = { 1: false, 2: false, 3: false };
+    (function () {
+      const IMGS = ['cartas/carta1.png', 'cartas/carta2.png', 'cartas/carta3.png'];
+      let picked = 0;
+      const grid       = document.getElementById('cardsGrid');
+      const selNum     = document.getElementById('selNum');
+      const selCounter = document.getElementById('selCounter');
+      const revelation = document.getElementById('revelation');
 
-    function flip(n) {
-      const el = document.getElementById('c' + n);
-      if (done[n]) return;
-      done[n] = true;
-      el.classList.add('flipped');
-      el.setAttribute('aria-label', `Carta ${n} revelada`);
-      if (navigator.vibrate) navigator.vibrate(40);
+      grid.querySelectorAll('.card-wrap').forEach(card => {
+        card.addEventListener('click', () => handlePick(card));
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePick(card); }
+        });
+      });
 
-      if (done[1] && done[2] && done[3]) {
-        const rev = document.getElementById('revelation');
-        setTimeout(() => {
-          rev.classList.add('show');
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              rev.classList.add('animate');
-              rev.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            });
+      function handlePick(card) {
+        if (picked >= 3 || card.classList.contains('selected')) return;
+
+        // Assign image by pick order (1st→carta1, 2nd→carta2, 3rd→carta3)
+        card.querySelector('.card-front img').src = IMGS[picked];
+
+        card.classList.add('selected', 'flipped');
+        card.setAttribute('aria-label', 'Carta revelada');
+        card.setAttribute('tabindex', '-1');
+        if (navigator.vibrate) navigator.vibrate(40);
+
+        picked++;
+        const restam = 3 - picked;
+
+        if (restam > 0) {
+          selNum.textContent = restam;
+        } else {
+          // All 3 chosen — update pill
+          selCounter.innerHTML =
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>'
+            + ' Cartas reveladas';
+          selCounter.style.borderColor = 'var(--gold-lt)';
+
+          // Dim remaining cards
+          grid.querySelectorAll('.card-wrap:not(.selected)').forEach(c => {
+            c.style.opacity = '0.22';
+            c.style.pointerEvents = 'none';
+            c.setAttribute('tabindex', '-1');
+            c.setAttribute('aria-disabled', 'true');
           });
-        }, 700);
+
+          // Reveal CTA box
+          setTimeout(() => {
+            revelation.classList.add('show');
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+              revelation.classList.add('animate');
+              revelation.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }));
+          }, 700);
+        }
       }
-    }
+    })();
   </script>
 
 </body>

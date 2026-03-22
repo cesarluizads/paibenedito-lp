@@ -104,7 +104,7 @@
     }
 
     /* ── Video ── */
-    .video-section { margin: 28px 0 12px; }
+    .video-section { margin: 28px auto 12px; max-width: 400px; }
 
     .video-frame {
       background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dk) 50%, var(--gold) 100%);
@@ -116,41 +116,69 @@
       background: #000;
       border-radius: 16px;
       overflow: hidden;
-      aspect-ratio: 16/9;
+      aspect-ratio: 9/16;
       position: relative;
     }
 
-    /* ─ Replace this placeholder with your embed code ─ */
-    .video-placeholder {
+    /* ── Custom VSL player ── */
+    #vsl-player {
       width: 100%; height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 18px;
-      background: radial-gradient(ellipse 80% 60% at 50% 50%, #1a1a2e 0%, #08080c 100%);
-      min-height: 280px;
+      display: block;
+      background: #000;
+      border-radius: 16px;
+      object-fit: contain;
     }
-    .play-ring {
-      width: 72px; height: 72px;
-      background: var(--gold);
-      border-radius: 50%;
+    .vpl-overlay {
+      position: absolute;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform .2s ease, box-shadow .3s ease;
+      transition: opacity .25s ease;
+    }
+    .vpl-btn {
+      width: 72px; height: 72px;
+      background: rgba(201,168,76,.88);
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s ease, background .2s ease;
       box-shadow: 0 0 0 0 rgba(201,168,76,.5);
       animation: playPulse 2s ease-in-out infinite;
     }
-    .play-ring:hover { transform: scale(1.08); }
-    .play-ring svg { width: 28px; height: 28px; fill: #08080c; margin-left: 5px; }
+    .vpl-btn:hover { transform: scale(1.08); background: var(--gold); }
+    .vpl-btn svg { width: 28px; height: 28px; fill: #08080c; }
+    .vpl-pause { display: none; margin-left: 0; }
+    .vpl-play  { margin-left: 5px; }
+    /* When playing */
+    .video-inner.playing .vpl-play   { display: none; }
+    .video-inner.playing .vpl-pause  { display: block; }
+    .video-inner.playing .vpl-overlay { opacity: 0; }
+    .video-inner.playing .vpl-overlay:hover { opacity: 1; }
+
+    /* ── Offer lock ── */
+    #offer-section {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(28px);
+      transition: opacity .8s ease-out, transform .8s ease-out;
+    }
+    #offer-section.reveal {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .sticky-cta { display: none !important; }
+    .sticky-cta.offer-ready { display: block !important; }
+
     @keyframes playPulse {
       0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,.5); }
       50%      { box-shadow: 0 0 0 16px rgba(201,168,76,0); }
     }
-    .video-placeholder p { font-size: 13px; color: var(--dim); font-style: italic; }
-    /* ─────────────────────────────────────────────── */
 
     .video-notice {
       display: flex;
@@ -553,18 +581,26 @@
     <!-- Video -->
     <section class="video-section" aria-label="Vídeo da mensagem">
       <div class="video-frame">
-        <div class="video-inner">
+        <div class="video-inner" id="videoInner">
           <video
             id="vsl-player"
             src="vsl.mp4"
-            controls
             preload="metadata"
             playsinline
-            poster=""
-            style="width:100%;height:100%;display:block;background:#000;border-radius:16px;"
+            disablePictureInPicture
+            controlsList="nodownload nofullscreen noremoteplayback"
             aria-label="Vídeo: Mensagem de Pai Benedito">
             Seu navegador não suporta reprodução de vídeo.
           </video>
+          <!-- Custom overlay — only play/pause, no native controls -->
+          <div class="vpl-overlay" id="vplOverlay" role="button" aria-label="Reproduzir / Pausar">
+            <button class="vpl-btn" id="vplBtn" aria-label="Reproduzir">
+              <!-- Play icon -->
+              <svg class="vpl-play" viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <!-- Pause icon -->
+              <svg class="vpl-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            </button>
+          </div>
         </div>
       </div>
       <p class="video-notice">
@@ -572,6 +608,9 @@
         Vídeo privado — não compartilhe este link
       </p>
     </section>
+
+    <!-- OFFER SECTION — locked until 10 min watched -->
+    <div id="offer-section">
 
     <!-- Separator -->
     <div class="section-sep">A solução que Pai Benedito preparou para você</div>
@@ -761,6 +800,8 @@
       </div>
     </div>
 
+    </div><!-- /#offer-section -->
+
     <!-- Footer -->
     <footer class="footer">
       Os resultados apresentados são experiências individuais e podem variar.<br />
@@ -779,29 +820,80 @@
   </div>
 
   <script>
-    // Order bump — troca o link do checkout
-    const cb = document.getElementById('bump-cb');
-    const btns = [
-      document.getElementById('btnPrincipal'),
-      document.getElementById('btnFinal'),
-      document.getElementById('btnSticky'),
-    ];
-    const URL_BASE = 'SEU-LINK-DE-CHECKOUT-AQUI';
-    const URL_BUMP = 'SEU-LINK-COM-ORDER-BUMP-AQUI';
+    /* ── Custom VSL Player ── */
+    const video      = document.getElementById('vsl-player');
+    const videoInner = document.getElementById('videoInner');
+    const overlay    = document.getElementById('vplOverlay');
+    const vplBtn     = document.getElementById('vplBtn');
 
-    cb.addEventListener('change', () => {
-      btns.forEach(b => { if (b) b.href = cb.checked ? URL_BUMP : URL_BASE; });
+    function togglePlay() {
+      if (video.paused || video.ended) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    }
+
+    overlay.addEventListener('click', togglePlay);
+    vplBtn.setAttribute('aria-label', 'Reproduzir');
+
+    video.addEventListener('play', () => {
+      videoInner.classList.add('playing');
+      vplBtn.setAttribute('aria-label', 'Pausar');
+    });
+    video.addEventListener('pause', () => {
+      videoInner.classList.remove('playing');
+      vplBtn.setAttribute('aria-label', 'Reproduzir');
+    });
+    video.addEventListener('ended', () => {
+      videoInner.classList.remove('playing');
+      vplBtn.setAttribute('aria-label', 'Reproduzir');
     });
 
-    // Hide sticky CTA when main CTA is visible
-    const observer = new IntersectionObserver(entries => {
-      const sticky = document.querySelector('.sticky-cta');
-      if (!sticky) return;
-      sticky.style.display = entries[0].isIntersecting ? 'none' : 'block';
-    }, { threshold: 0.5 });
+    // Prevent context-menu download on video
+    video.addEventListener('contextmenu', e => e.preventDefault());
 
+    /* ── Offer lock — reveal after 10 min (600s) ── */
+    const offerSection = document.getElementById('offer-section');
+    const stickyCta    = document.querySelector('.sticky-cta');
+    let offerRevealed  = false;
+
+    function revealOffer() {
+      if (offerRevealed) return;
+      offerRevealed = true;
+      offerSection.classList.add('reveal');
+      if (stickyCta) stickyCta.classList.add('offer-ready');
+    }
+
+    video.addEventListener('timeupdate', () => {
+      if (!offerRevealed && video.currentTime >= 600) revealOffer();
+    });
+
+    // DEV HELPER: uncomment to reveal immediately for testing
+    // revealOffer();
+
+    /* ── Order bump — swap checkout link ── */
+    const cb       = document.getElementById('bump-cb');
+    const URL_BASE = 'SEU-LINK-DE-CHECKOUT-AQUI';
+    const URL_BUMP = 'SEU-LINK-COM-ORDER-BUMP-AQUI';
+    const btnIds   = ['btnPrincipal', 'btnFinal', 'btnSticky'];
+
+    cb.addEventListener('change', () => {
+      btnIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.href = cb.checked ? URL_BUMP : URL_BASE;
+      });
+    });
+
+    /* ── Hide sticky CTA when main CTA is in viewport ── */
     const mainCta = document.querySelector('.cta-zone');
-    if (mainCta) observer.observe(mainCta);
+    if (mainCta && stickyCta) {
+      const io = new IntersectionObserver(entries => {
+        if (!offerRevealed) return;
+        stickyCta.style.display = entries[0].isIntersecting ? 'none' : '';
+      }, { threshold: 0.5 });
+      io.observe(mainCta);
+    }
   </script>
 
 </body>
